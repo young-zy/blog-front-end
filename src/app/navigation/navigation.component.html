@@ -1,0 +1,36 @@
+<mat-sidenav-container class="sidenav-container">
+<!--  <mat-sidenav #drawer class="sidenav" fixedInViewport-->
+<!--      [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"-->
+<!--      [mode]="(isHandset$ | async) ? 'over' : 'side'"-->
+<!--      [opened]="(isHandset$ | async) === false">-->
+<!--    <mat-toolbar>Menu</mat-toolbar>-->
+<!--    <mat-nav-list>-->
+<!--      <a mat-list-item href="#">Link 1</a>-->
+<!--      <a mat-list-item href="#">Link 2</a>-->
+<!--      <a mat-list-item href="#">Link 3</a>-->
+<!--    </mat-nav-list>-->
+<!--  </mat-sidenav>-->
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <button mat-icon-button class="icon" aria-label="Back" (click)="backClicked()"
+              [style.visibility]="isRoot ? 'hidden' : 'visible'" style="margin-right: 16px">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <span>blog</span>
+      <span fxFlex="grow"></span>
+      <mat-menu #menu="matMenu">
+          <mat-radio-button class="theme-radio-button mat-menu-item" *ngFor="let theme of Themes | keyvalue"
+                            (click)="changeTheme(theme.value)"
+                            [checked]="currentTheme === theme.value"
+                            [value]="theme.value" >{{ theme.key }}</mat-radio-button>
+      </mat-menu>
+      <button mat-icon-button matTooltip="theme picker" aria-label="button used to open theme picker" [matMenuTriggerFor]="menu">
+        <mat-icon>format_color_fill</mat-icon>
+      </button>
+      <button *ngIf="!isLoggedIn" mat-button matTooltip="theme picker" aria-label="button used to login" (click)="openLoginDialog()">
+        登录
+      </button>
+    </mat-toolbar>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

@@ -1,0 +1,74 @@
+<div fxLayout="column" fxLayoutAlign="space-around stretch" >
+  <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-around" >
+    <mat-card fxFlex.xs="100" fxFlex.sm="95" fxFlex.md="85" fxFlex="60" style="max-width: 1080px; margin-top: 8px; padding: 32px">
+      <mat-card-title>提一个新问题？</mat-card-title>
+      <mat-card-content fxLayoutAlign="center">
+        <form fxFlex="95" fxLayout="column" fxLayoutAlign="space-around" fxLayoutGap="16px" [formGroup]="questionForm">
+          <mat-form-field>
+            <mat-label>问题</mat-label>
+            <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="1" cdkAutosizeMaxRows="5" formControlName="questionContent"
+                      #question maxlength="100" placeholder="Ex. 请问为什么...?" required></textarea>
+            <mat-hint align="start">请在此输入您的问题</mat-hint>
+            <mat-hint align="end">{{question.value.length}} / 100</mat-hint>
+            <mat-error *ngIf="questionContentControl.errors?.required">
+              问题不能为空
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Email</mat-label>
+            <input matInput placeholder="your@email.here" type="email" email="true" formControlName="email">
+            <mat-hint align="start">(可选)输入您的email以在您的问题得到回答时收到通知</mat-hint>
+            <mat-error>email格式不正确</mat-error>
+          </mat-form-field>
+        </form>
+      </mat-card-content>
+      <mat-card-actions dir="rtl">
+        <button mat-raised-button color="accent" style="margin-right: 16px" (click)="handleNewQuestion()" [disabled]="!questionForm.valid">提交</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+  <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-around center" >
+    <mat-card fxFlex.xs="100" fxFlex.sm="95" fxFlex.md="85" fxFlex="60" style="max-width: 1080px; margin-top: 8px">
+      <mat-progress-bar *ngIf="questionListLoading" mode="indeterminate"
+                        style="position: relative; left: -16px; top: -16px; width: calc(100% + 32px)"></mat-progress-bar>
+      <mat-card-content>
+        <div fxLayout="row">
+          <mat-form-field appearance="standard" style="width: 100px; margin-left: 8px;">
+            <mat-label>问题过滤</mat-label>
+            <mat-select [(value)]="filter" (selectionChange)="handleFilterChange($event.value)">
+              <mat-option value="all">全部</mat-option>
+              <mat-option value="solved">已回答</mat-option>
+              <mat-option value="unsolved">未回答</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-paginator fxFlex="calc(100% - 100px)" style="min-width: 420px"
+                         [length]="totCount"
+                         [pageSize]="pageSize"
+                         [pageIndex]="currentPage-1"
+                         [pageSizeOptions]="[5, 10, 25, 100]"
+                         (page)="handlePageEvent($event)">
+          </mat-paginator>
+        </div>
+        <mat-list *ngFor="let question of questionList; last as last ">
+          <mat-list-item matRipple fxLayout="row" fxLayoutAlign="start center" style="margin: 0" (click)="handleQuestionClick(question.id)">
+            <mat-chip-list fxFlex="noshrink" style="margin-right: 8px">
+              <mat-chip (click)="handleQuestionClick(question.id)" disableRipple [class.solved]="question.isAnswered">{{ question.isAnswered ? '已回答' : '未回答'}}</mat-chip>
+            </mat-chip-list>
+            <div>
+              {{ question.questionContent }}
+            </div>
+          </mat-list-item>
+          <mat-divider [inset]="true" *ngIf="!last" style="margin-top: 8px"></mat-divider>
+        </mat-list>
+        <mat-paginator *ngIf="pageSize>10 && questionList && questionList.length > 10"
+                       [length]="totCount"
+                       [pageSize]="pageSize"
+                       [pageIndex]="currentPage-1"
+                       [pageSizeOptions]="[5, 10, 25, 100]"
+                       (page)="handlePageEvent($event)">
+        </mat-paginator>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div style="height: 60vh"></div>
+</div>

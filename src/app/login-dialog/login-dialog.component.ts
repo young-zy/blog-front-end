@@ -1,0 +1,84 @@
+import { Component, OnInit } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
+import { AbstractControl, FormBuilder, FormControl, ValidationErrors, Validators } from '@angular/forms';
+import { UserService } from '../common/user.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
+@Component({
+  selector: 'app-login-dialog',
+  templateUrl: './login-dialog.component.html',
+  styleUrls: ['./login-dialog.component.scss']
+})
+export class LoginDialogComponent implements OnInit {
+
+  constructor(public dialogRef: MatDialogRef<LoginDialogComponent>,
+              private formBuilder: FormBuilder,
+              private userService: UserService,
+              private snackBar: MatSnackBar) { }
+
+  get usernameControl(): FormControl{
+    return this.loginForm.get('username') as FormControl;
+  }
+
+  get passwordControl(): FormControl{
+    return this.loginForm.get('password') as FormControl;
+  }
+
+  private usernameExists = true;
+  private passwordIncorrect = false;
+
+  loginForm = this.formBuilder.group({
+    username: [undefined, [Validators.required, this.usernameExistsValidator.bind(this)]],
+    password: [undefined, [Validators.required, this.passwordValidator.bind(this)]]
+  });
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
+  usernameExistsValidator(control: AbstractControl): ValidationErrors | null{
+    const res = this.usernameExists ? null : {usernameNotExist: control.value};
+    this.usernameExists = true;
+    return res;
+  }
+
+  passwordValidator(control: AbstractControl): ValidationErrors | null{
+    const res = this.passwordIncorrect ? {passwordIncorrect: control.value} : null;
+    this.passwordIncorrect = false;
+    return res;
+  }
+
+  ngOnInit(): void {
+  }
+
+  formSubmit(): void{
+    if (!this.loginForm.valid){
+      return;
+    }
+    this.usernameExists = true;
+    this.passwordIncorrect = false;
+    this.userService.login(this.usernameControl.value, this.passwordControl.value).subscribe(
+      () => {
+        console.log('login success');
+        this.snackBar.open('登录成功', 'Dismiss', {
+          duration: 3000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
+        });
+        this.dialogRef.close();
+      },
+      error => {
+        console.log(error);
+        console.log('login failed');
+        if (error.message === 'username does not exist'){
+          this.usernameExists = false;
+          this.usernameControl.updateValueAndValidity();
+        } else {
+          this.passwordIncorrect = true;
+          this.passwordControl.updateValueAndValidity();
+        }
+      }
+    );
+  }
+
+}

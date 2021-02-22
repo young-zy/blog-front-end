@@ -1,1 +1,36 @@
 /* You can add global styles to this file, and also import other style files */
+
+@import '~@angular/material/theming';
+
+@include mat-core();
+
+$indigo-pink-primary: mat-palette($mat-indigo);
+$indigo-pink-accent:  mat-palette($mat-pink, A200, A100, A400);
+$indigo-pink-theme:   mat-light-theme($indigo-pink-primary, $indigo-pink-accent);
+
+@include angular-material-theme($indigo-pink-theme);
+
+$blue-gray-primary: mat-palette($mat-blue-grey);
+$blue-gray-accent:  mat-palette($mat-amber, A200, A100, A400);
+$blue-gray-warn:    mat-palette($mat-deep-orange);
+$blue-gray-theme:   mat-dark-theme($blue-gray-primary, $blue-gray-accent, $blue-gray-warn);
+
+.blue-gray {
+  @include angular-material-color($blue-gray-theme);
+  $theme: 'blue-gray'
+}
+
+.indigo-pink {
+  //@include angular-material-color($indigo-pink-theme);
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", "Noto Sans S Chinese", sans-serif; }
+
+// Define a custom typography config that overrides the font-family as well as the
+// `headlines` and `body-1` levels.
+$custom-typography: mat-typography-config(
+  $font-family: 'Roboto, Noto Sans S Chinese, monospace',
+);
+
+@include angular-material-typography($custom-typography);
