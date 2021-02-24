@@ -8,10 +8,12 @@ import { QuestionComponent } from './question/question.component';
 const routes: Routes = [
   {
     path: '',
+    data: { title: 'Question-Box' },
     component: QuestionListComponent
   },
   {
     path: ':questionId',
+    data: { title: 'Question-Box' },
     component: QuestionComponent
   }
 ];

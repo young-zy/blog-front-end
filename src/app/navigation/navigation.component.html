@@ -16,7 +16,7 @@
               [style.visibility]="isRoot ? 'hidden' : 'visible'" style="margin-right: 16px">
         <mat-icon>arrow_back</mat-icon>
       </button>
-      <span>blog</span>
+      <span>{{ title }}</span>
       <span fxFlex="grow"></span>
       <mat-menu #menu="matMenu">
           <mat-radio-button class="theme-radio-button mat-menu-item" *ngFor="let theme of Themes | keyvalue"

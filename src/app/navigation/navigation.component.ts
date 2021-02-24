@@ -7,6 +7,7 @@ import { DOCUMENT } from '@angular/common';
 import { UserService } from '../common/user.service';
 import { MatDialog } from '@angular/material/dialog';
 import { LoginDialogComponent } from '../login-dialog/login-dialog.component';
+import { TitleService } from '../common/title.service';
 
 @Component({
   selector: 'app-navigation',
@@ -20,7 +21,12 @@ export class NavigationComponent implements OnInit, OnDestroy{
   public currentTheme = '';
 
   public isLoggedIn = false;
-  private loginStateSubscriber: Subscription | undefined;
+
+  public title = '';
+
+  private loginStateSubscription: Subscription | undefined;
+
+  private titleSubscription: Subscription | undefined;
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
@@ -31,6 +37,7 @@ export class NavigationComponent implements OnInit, OnDestroy{
   constructor(private breakpointObserver: BreakpointObserver,
               private dialog: MatDialog,
               @Inject(DOCUMENT) private document: Document,
+              private titleService: TitleService,
               private location: Location,
               private userService: UserService) {}
 
@@ -62,7 +69,10 @@ export class NavigationComponent implements OnInit, OnDestroy{
   }
 
   ngOnInit(): void {
-    this.loginStateSubscriber = this.userService.loginState.subscribe(
+    this.titleSubscription = this.titleService.currentTitle.subscribe(next => {
+      this.title = next;
+    });
+    this.loginStateSubscription = this.userService.loginState.subscribe(
       next => this.isLoggedIn = next
     );
     this.currentTheme = window.localStorage.getItem('theme') || this.Themes.indigoPink;
@@ -70,7 +80,8 @@ export class NavigationComponent implements OnInit, OnDestroy{
   }
 
   ngOnDestroy(): void {
-    this.loginStateSubscriber?.unsubscribe();
+    this.loginStateSubscription?.unsubscribe();
+    this.titleSubscription?.unsubscribe();
   }
 }
 

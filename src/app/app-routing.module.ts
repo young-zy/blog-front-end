@@ -9,7 +9,6 @@ const routes: Routes = [
   },
   {
     path: 'question',
-    // component: QuestionListComponent
     loadChildren: () => import('./question-box/question-box.module').then(m => m.QuestionBoxModule)
   }
   ];
