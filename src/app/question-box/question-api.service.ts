@@ -1,22 +1,25 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { QuestionListResponse, Question } from '../common/entities/question';
+import { Question, QuestionListResponse } from '../common/entities/question';
 
 @Injectable({
   providedIn: 'root'
 })
 export class QuestionApiService {
 
-  newQuestion(questionContent: string, email: string | undefined): Observable<Response>{
+  newQuestion(token: string, questionContent: string, email: string | undefined): Observable<Response> {
+    const headers = new HttpHeaders().set('captchaToken', token);
     return this.http.post<Response>(`${environment.baseURL}/question`, {
       questionContent,
       email
+    }, {
+      headers
     });
   }
 
-  getQuestions(page: number = 1, size: number = 10, filter: string = ''): Observable<QuestionListResponse>{
+  getQuestions(page: number = 1, size: number = 10, filter: string = ''): Observable<QuestionListResponse> {
     const params = new HttpParams()
       .set('page', String(page))
       .set('size', String(size))

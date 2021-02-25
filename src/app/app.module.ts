@@ -29,6 +29,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { TokenInterceptorService } from './common/interceptor/token-interceptor.service';
 import { NotFoundComponent } from './not-found/not-found.component';
+import { RECAPTCHA_BASE_URL, RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module } from 'ng-recaptcha';
 
 @NgModule({
   declarations: [
@@ -60,6 +61,7 @@ import { NotFoundComponent } from './not-found/not-found.component';
     MatSnackBarModule,
     FormsModule,
     ReactiveFormsModule,
+    RecaptchaV3Module,
     MarkdownModule.forRoot(),
     FlexLayoutModule
   ],
@@ -68,7 +70,15 @@ import { NotFoundComponent } from './not-found/not-found.component';
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptorService,
       multi: true
-    }
+    },
+    {
+      provide: RECAPTCHA_V3_SITE_KEY,
+      useValue: environment.recaptchaSiteKey
+    },
+    {
+      provide: RECAPTCHA_BASE_URL,
+      useValue: 'https://recaptcha.net/recaptcha/api.js',
+    },
   ],
   bootstrap: [AppComponent]
 })
