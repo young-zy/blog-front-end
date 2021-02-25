@@ -4,6 +4,7 @@ import { Question } from '../../common/entities/question';
 import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { ReCaptchaV3Service } from 'ng-recaptcha';
 
 @Component({
   selector: 'app-question-list',
@@ -38,6 +39,7 @@ export class QuestionListComponent implements OnInit {
   });
 
   constructor(private questionApi: QuestionApiService,
+              private recaptchaV3Service: ReCaptchaV3Service,
               private router: Router,
               private route: ActivatedRoute,
               private formBuilder: FormBuilder) { }
@@ -83,21 +85,29 @@ export class QuestionListComponent implements OnInit {
     this.router.navigate([`/question/${questionId}`]).then();
   }
 
-  handleNewQuestion(): void{
+  handleNewQuestion(): void {
     if (!this.questionForm.valid) {
       return;
     }
     let email: string | undefined = this.emailControl.value;
-    if (email === ''){
+    if (email === '') {
       email = undefined;
     }
-    this.questionApi.newQuestion(this.questionContentControl.value, email).subscribe(
-      () => {
-        this.questionForm.reset();
-        this.loadQuestions();
-      },
-      error => {
-        console.log(error);
-    });
+    const recaptchaSubscription = this.recaptchaV3Service.execute('newQuestion')
+      .subscribe(token => {
+        console.log(token);
+        this.questionApi.newQuestion(token, this.questionContentControl.value, email).subscribe(
+          () => {
+            this.questionForm.reset();
+            this.loadQuestions();
+            recaptchaSubscription.unsubscribe();
+          },
+          error => {
+            // TODO show error to users
+            console.log(error);
+            recaptchaSubscription.unsubscribe();
+          });
+      });
+
   }
 }
