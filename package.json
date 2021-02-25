@@ -7,7 +7,10 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "clean": "rimraf ./dist",
+    "build:prod": "ng build --prod",
+    "build:ci": "npm run clean && npm run build:prod"
   },
   "private": true,
   "dependencies": {
