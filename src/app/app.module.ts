@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ServiceWorkerModule } from '@angular/service-worker';
+import { ServiceWorkerModule, SwUpdate } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { QuestionBoxModule } from './question-box/question-box.module';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
@@ -28,12 +28,14 @@ import { LoginDialogComponent } from './login-dialog/login-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { TokenInterceptorService } from './common/interceptor/token-interceptor.service';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavigationComponent,
-    LoginDialogComponent
+    LoginDialogComponent,
+    NotFoundComponent
   ],
   imports: [
     BrowserModule,
@@ -70,4 +72,24 @@ import { TokenInterceptorService } from './common/interceptor/token-interceptor.
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(private updates: SwUpdate) {
+    updates.available.subscribe(event => {
+      console.log('current version is', event.current);
+      console.log('available version is', event.available);
+    });
+    updates.activated.subscribe(event => {
+      console.log('old version was', event.previous);
+      console.log('new version is', event.current);
+    });
+
+    updates.available.subscribe(() => {
+      updates.activateUpdate().then(() => AppModule.updateApp());
+    });
+  }
+
+  private static updateApp(): void {
+    document.location.reload();
+    console.log('The app is updating right now');
+  }
+}

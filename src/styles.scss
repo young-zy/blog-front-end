@@ -1,6 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import '~@angular/material/theming';
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC&display=swap');
 
 @include mat-core();
 
@@ -24,13 +25,17 @@ $blue-gray-theme:   mat-dark-theme($blue-gray-primary, $blue-gray-accent, $blue-
   //@include angular-material-color($indigo-pink-theme);
 }
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", "Noto Sans S Chinese", sans-serif; }
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+//body { margin: 0; font-family: Roboto, 'Noto Sans SC', "Helvetica Neue", sans-serif; }
 
 // Define a custom typography config that overrides the font-family as well as the
 // `headlines` and `body-1` levels.
 $custom-typography: mat-typography-config(
-  $font-family: 'Roboto, Noto Sans S Chinese, monospace',
+  $font-family: 'Roboto, Noto Sans SC,  monospace',
 );
 
 @include angular-material-typography($custom-typography);

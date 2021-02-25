@@ -1,0 +1,31 @@
+.box {
+  width: 100%;
+  height: 100%;
+  display: -webkit-flex; /* Safari */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.card {
+  width: 30%;
+  min-width: 300px;
+  display: -webkit-flex; /* Safari */
+  display: flex;
+  flex-direction: column;
+}
+
+.center {
+  display: -webkit-flex; /* Safari */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.button-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 16px;
+}

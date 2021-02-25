@@ -1,7 +1,7 @@
-<div fxLayout="column" fxLayoutAlign="space-around stretch" >
-  <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-around" >
-    <mat-card fxFlex.xs="100" fxFlex.sm="95" fxFlex.md="85" fxFlex="70" style="margin-top: 32px; padding: 32px">
-      <mat-card-content style="overflow: auto">
+<div fxLayout="column" fxLayoutAlign="space-around stretch">
+  <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-around">
+    <mat-card fxFlex="70" fxFlex.md="85" fxFlex.sm="95" fxFlex.xs="100" style="margin-top: 32px; padding: 28px">
+      <mat-card-content>
         <div fxLayout="row" fxLayoutAlign="space-around start">
           <div fxFlex="nogrow" class="mat-display-1" style="margin-right: 16px; margin-bottom: 0">Q:</div>
           <div fxFlex="auto">
@@ -10,7 +10,8 @@
             </div>
             <div fxLayout="row" fxLayoutAlign="start end" style="margin-top: 16px;">
               <mat-chip-list fxFlex="noshrink" style="margin-right: 16px">
-                <mat-chip disableRipple [class.solved]="question?.isAnswered">{{ question?.isAnswered ? '已回答' : '未回答'}}</mat-chip>
+                <mat-chip [class.solved]="question?.isAnswered"
+                          disableRipple>{{ question?.isAnswered ? '已回答' : '未回答'}}</mat-chip>
               </mat-chip-list>
               <div [fxFlex]="question?.isAnswered ? 'noshrink' : 'fill'" style="opacity: 60%; margin-right: 16px;">提出于： {{ question?.createTime | date }}</div>
               <div fxFlex="fill" style="opacity: 60%" *ngIf="question?.isAnswered">回答于： {{ question?.answerTime | date:'y年M月d日  h:mm:ss' }}</div>

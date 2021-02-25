@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { QuestionApiService } from '../question-api.service';
 import { Question } from '../../common/entities/question';
 import { UserService } from '../../common/user.service';
@@ -17,6 +17,7 @@ export class QuestionComponent implements OnInit {
 
   constructor(private questionApi: QuestionApiService,
               private formBuilder: FormBuilder,
+              private router: Router,
               private userService: UserService,
               private snackBar: MatSnackBar,
               private route: ActivatedRoute) { }
@@ -42,8 +43,14 @@ export class QuestionComponent implements OnInit {
 
   private loadQuestion(): void {
     this.questionApi.getQuestion(this.questionId).subscribe(next => {
-      this.question = next;
-    });
+        this.question = next;
+      },
+      error => {
+        console.log(error);
+        if (error.status === 404) {
+          this.router.navigate(['/NotFound'], {skipLocationChange: true}).then();
+        }
+      });
   }
 
   handlePreviewChange(change: MatCheckboxChange): void{
