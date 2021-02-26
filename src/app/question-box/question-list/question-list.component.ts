@@ -95,7 +95,6 @@ export class QuestionListComponent implements OnInit {
     }
     const recaptchaSubscription = this.recaptchaV3Service.execute('newQuestion')
       .subscribe(token => {
-        console.log(token);
         this.questionApi.newQuestion(token, this.questionContentControl.value, email).subscribe(
           () => {
             this.questionForm.reset();
@@ -107,6 +106,9 @@ export class QuestionListComponent implements OnInit {
             console.log(error);
             recaptchaSubscription.unsubscribe();
           });
+      }, error => {
+        console.log(error);
+        recaptchaSubscription.unsubscribe();
       });
 
   }
