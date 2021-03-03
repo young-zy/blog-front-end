@@ -110,6 +110,5 @@ export class QuestionListComponent implements OnInit {
         console.log(error);
         recaptchaSubscription.unsubscribe();
       });
-
   }
 }

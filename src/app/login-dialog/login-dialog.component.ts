@@ -70,12 +70,14 @@ export class LoginDialogComponent implements OnInit {
       error => {
         console.log(error);
         console.log('login failed');
-        if (error.message === 'username does not exist'){
+        if (error.error.message === 'username does not exist') {
           this.usernameExists = false;
           this.usernameControl.updateValueAndValidity();
-        } else {
+        } else if (error.error.message === 'username or password incorrect') {
           this.passwordIncorrect = true;
           this.passwordControl.updateValueAndValidity();
+        } else {
+          this.snackBar.open('some thing bad happened');
         }
       }
     );
