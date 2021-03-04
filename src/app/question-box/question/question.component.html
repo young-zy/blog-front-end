@@ -4,8 +4,8 @@
       <mat-card-content>
         <div fxLayout="row" fxLayoutAlign="space-around start">
           <div fxFlex="nogrow" class="mat-display-1" style="margin-right: 16px; margin-bottom: 0">Q:</div>
-          <div fxFlex="auto">
-            <div class="mat-display-1" style="margin-bottom: 0">
+          <div fxFlex="100">
+            <div class="mat-display-1" style="margin-bottom: 0; overflow-wrap: break-word;">
               {{ question?.questionContent }}
             </div>
             <div fxLayout="row" fxLayoutAlign="start end" style="margin-top: 16px;">
@@ -13,8 +13,10 @@
                 <mat-chip [class.solved]="question?.isAnswered"
                           disableRipple>{{ question?.isAnswered ? '已回答' : '未回答'}}</mat-chip>
               </mat-chip-list>
-              <div [fxFlex]="question?.isAnswered ? 'noshrink' : 'fill'" style="opacity: 60%; margin-right: 16px;">提出于： {{ question?.createTime | date }}</div>
-              <div fxFlex="fill" style="opacity: 60%" *ngIf="question?.isAnswered">回答于： {{ question?.answerTime | date:'y年M月d日  h:mm:ss' }}</div>
+              <div [fxFlex]="question?.isAnswered ? 'noshrink' : 'fill'" style="opacity: 60%; margin-right: 16px;">
+                提出于： {{ question?.createTime | date }}</div>
+              <div *ngIf="question?.isAnswered" fxFlex="fill" style="opacity: 60%">
+                回答于： {{ question?.answerTime | date:'y年M月d日  h:mm:ss' }}</div>
             </div>
           </div>
         </div>
