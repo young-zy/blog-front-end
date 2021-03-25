@@ -1,6 +1,8 @@
 <div fxLayout="column" fxLayoutAlign="space-around stretch">
   <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-around">
     <mat-card fxFlex="70" fxFlex.md="85" fxFlex.sm="95" fxFlex.xs="100" style="margin-top: 32px; padding: 28px">
+      <mat-progress-bar *ngIf="questionLoading" mode="indeterminate"
+                        style="position: relative; left: -28px; top: -28px; width: calc(100% + 56px)"></mat-progress-bar>
       <mat-card-content>
         <div fxLayout="row" fxLayoutAlign="space-around start">
           <div fxFlex="nogrow" class="mat-display-1" style="margin-right: 16px; margin-bottom: 0">Q:</div>

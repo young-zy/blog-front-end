@@ -15,12 +15,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class QuestionComponent implements OnInit {
 
-  constructor(private questionApi: QuestionApiService,
-              private formBuilder: FormBuilder,
-              private router: Router,
-              private userService: UserService,
-              private snackBar: MatSnackBar,
-              private route: ActivatedRoute) { }
+  questionLoading = false;
 
   preview = false;
 
@@ -28,9 +23,17 @@ export class QuestionComponent implements OnInit {
 
   question: Question | undefined;
 
+  constructor(private questionApi: QuestionApiService,
+              private formBuilder: FormBuilder,
+              private router: Router,
+              private userService: UserService,
+              private snackBar: MatSnackBar,
+              private route: ActivatedRoute) {
+  }
+
   answerContentControl = this.formBuilder.control(undefined, [Validators.required]);
 
-  get isLoggedIn(): Observable<boolean>{
+  get isLoggedIn(): Observable<boolean> {
     return this.userService.loginState;
   }
 
@@ -42,8 +45,10 @@ export class QuestionComponent implements OnInit {
   }
 
   private loadQuestion(): void {
+    this.questionLoading = true;
     this.questionApi.getQuestion(this.questionId).subscribe(next => {
         this.question = next;
+        this.questionLoading = false;
       },
       error => {
         console.log(error);
