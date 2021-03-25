@@ -77,7 +77,9 @@ export class LoginDialogComponent implements OnInit {
           this.passwordIncorrect = true;
           this.passwordControl.updateValueAndValidity();
         } else {
-          this.snackBar.open('some thing bad happened');
+          this.snackBar.open('some thing bad happened', 'Dismiss', {
+            duration: 3000
+          });
         }
       }
     );

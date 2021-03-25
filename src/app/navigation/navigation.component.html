@@ -12,24 +12,40 @@
 <!--  </mat-sidenav>-->
   <mat-sidenav-content>
     <mat-toolbar color="primary">
-      <button mat-icon-button class="icon" aria-label="Back" (click)="backClicked()"
+      <button (click)="backClicked()" aria-label="Back" mat-icon-button
               [style.visibility]="isRoot ? 'hidden' : 'visible'" style="margin-right: 16px">
         <mat-icon>arrow_back</mat-icon>
       </button>
       <span>{{ title }}</span>
       <span fxFlex="grow"></span>
-      <mat-menu #menu="matMenu">
-          <mat-radio-button class="theme-radio-button mat-menu-item" *ngFor="let theme of Themes | keyvalue"
-                            (click)="changeTheme(theme.value)"
-                            [checked]="currentTheme === theme.value"
-                            [value]="theme.value" >{{ theme.key }}</mat-radio-button>
+      <mat-menu #themeMenu="matMenu">
+        <mat-radio-button (click)="changeTheme(theme.value)" *ngFor="let theme of Themes | keyvalue"
+                          [checked]="currentTheme === theme.value"
+                          [value]="theme.value"
+                          class="theme-radio-button mat-menu-item">{{ theme.key }}</mat-radio-button>
       </mat-menu>
-      <button mat-icon-button matTooltip="theme picker" aria-label="button used to open theme picker" [matMenuTriggerFor]="menu">
+      <button [matMenuTriggerFor]="themeMenu" aria-label="button used to open theme picker" mat-icon-button
+              matTooltip="theme picker">
         <mat-icon>format_color_fill</mat-icon>
       </button>
-      <button *ngIf="!isLoggedIn" mat-button matTooltip="theme picker" aria-label="button used to login" (click)="openLoginDialog()">
+      <button (click)="openLoginDialog()" *ngIf="!(loginState | async)" aria-label="button used to login" mat-button
+              matTooltip="theme picker">
         登录
       </button>
+      <button *ngIf="(loginState | async)" [matMenuTriggerFor]="menu" color="accent" mat-icon-button
+              style="margin-left: 16px">
+        <img [src]="avatar | async" alt="avatar" height="100%" mat-card-avatar style="border-radius: 50%" width="100%"/>
+      </button>
+      <mat-menu #menu="matMenu">
+        <ng-template matMenuContent>
+          <div *ngIf=" (selfInfo | async) " class="user-card" fxLayout="column" fxLayoutAlign="center center">
+            <img [src]="avatar | async" alt="avatar" height="80px" style="border-radius: 50%" width="80px"/>
+            <h2 class="menu-username" style="margin-bottom: 0;">{{ (selfInfo | async)?.username }}</h2>
+            <h4 class="menu-email">{{ (selfInfo | async)?.email }}</h4>
+            <button (click)="logoutClicked()" color="warn" mat-flat-button>登出</button>
+          </div>
+        </ng-template>
+      </mat-menu>
     </mat-toolbar>
     <router-outlet></router-outlet>
   </mat-sidenav-content>

@@ -2,29 +2,39 @@
   height: auto !important;
   min-height: 48px !important;
   &:hover{
-    :host-context(.indigo-pink) &{
-      background: hsla(0,0%,0%, .04);
+    :host-context(.indigo-pink) & {
+      background: hsla(0, 0%, 0%, .04);
     }
-    :host-context(.blue-gray) &{
+
+    :host-context(.blue-gray,.black) & {
       background: hsla(0, 0%, 100%, .04);
     }
   }
 }
 
 .mat-standard-chip {
-  &:hover::after{
+  &:hover::after {
     opacity: 0;
   }
-  &:focus::after{
+
+  &:focus::after {
     opacity: 0;
   }
-  :host-context(.blue-gray) &{
-    &.solved{
+
+  :host-context(.blue-gray) & {
+    &.solved {
       background: #3aae45;
     }
   }
-  :host-context(.indigo-pink) &{
-    &.solved{
+
+  :host-context(.black) & {
+    &.solved {
+      background: #27732d;
+    }
+  }
+
+  :host-context(.indigo-pink) & {
+    &.solved {
       background: #9fffa8;
     }
   }

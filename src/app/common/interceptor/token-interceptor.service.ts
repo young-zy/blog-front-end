@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { UserService } from '../user.service';
 import { environment } from '../../../environments/environment';
+import { TokenResponse } from '../entities/response';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TokenInterceptorService implements HttpInterceptor{
+export class TokenInterceptorService implements HttpInterceptor {
 
-  constructor(private userService: UserService) { }
+  constructor(private http: HttpClient) {
+  }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     // get token and expire from localstorage
@@ -25,7 +26,7 @@ export class TokenInterceptorService implements HttpInterceptor{
         const date = new Date(expire);
         const lag = date.getTime() - new Date().getTime();
         if (lag < 3600) {
-          this.userService.refreshToken().subscribe(
+          this.http.get<TokenResponse>(`${environment.baseURL}/auth/token`).subscribe(
             resp => {
               window.localStorage.setItem('token', resp.token);
               window.localStorage.setItem('expire', resp.expire);
@@ -34,8 +35,7 @@ export class TokenInterceptorService implements HttpInterceptor{
               console.log('token expired');
               window.localStorage.removeItem('token');
               window.localStorage.removeItem('expire');
-            }
-          );
+            });
         }
       }
     }
