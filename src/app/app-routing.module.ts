@@ -9,6 +9,10 @@ const routes: Routes = [
     pathMatch: 'full',
   },
   {
+    path: 'blog',
+    loadChildren: () => import('./blog/blog.module').then(m => m.BlogModule)
+  },
+  {
     path: 'question',
     loadChildren: () => import('./question-box/question-box.module').then(m => m.QuestionBoxModule)
   },

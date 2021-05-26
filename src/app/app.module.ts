@@ -14,7 +14,6 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatRadioModule } from '@angular/material/radio';
@@ -30,13 +29,15 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { TokenInterceptorService } from './common/interceptor/token-interceptor.service';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { RECAPTCHA_BASE_URL, RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module } from 'ng-recaptcha';
+import { UploadAvatarComponent } from './upload-avatar/upload-avatar.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavigationComponent,
     LoginDialogComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    UploadAvatarComponent
   ],
   imports: [
     BrowserModule,
@@ -50,7 +51,6 @@ import { RECAPTCHA_BASE_URL, RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module } from 'ng
     MatButtonModule,
     MatSidenavModule,
     MatIconModule,
-    MatListModule,
     MatTooltipModule,
     MatMenuModule,
     MatRadioModule,
@@ -87,19 +87,14 @@ export class AppModule {
     updates.available.subscribe(event => {
       console.log('current version is', event.current);
       console.log('available version is', event.available);
+      updates.activateUpdate().then(() => {
+        document.location.reload();
+        console.log('The app is updating right now');
+      });
     });
     updates.activated.subscribe(event => {
       console.log('old version was', event.previous);
       console.log('new version is', event.current);
     });
-
-    updates.available.subscribe(() => {
-      updates.activateUpdate().then(() => AppModule.updateApp());
-    });
-  }
-
-  private static updateApp(): void {
-    document.location.reload();
-    console.log('The app is updating right now');
   }
 }
