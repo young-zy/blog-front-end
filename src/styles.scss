@@ -4,47 +4,6 @@
 @use '~@angular/material/core/theming/palette';
 /* You can add global styles to this file, and also import other style files */
 
-// Creates a backwards compatible theme. Previously in Angular Material, theme objects
-// contained the color configuration directly. With the recent refactoring of the theming
-// system to allow for density and typography configurations, this is no longer the case.
-// To ensure that constructed themes which will be passed to custom theme mixins do not break,
-// we copy the color configuration and put its properties at the top-level of the theme object.
-// Here is an example of a pattern that should still work until it's officially marked as a
-// breaking change:
-//
-//    @mixin my-custom-component-theme($theme) {
-//      .my-comp {
-//        background-color: mat-color(map-get($theme, primary));
-//      }
-//    }
-//
-// Note that the `$theme.primary` key does usually not exist since the color configuration
-// is stored in `$theme.color` which contains a property for `primary`. This method copies
-// the map from `$theme.color` to `$theme` for backwards compatibility.
-@function private-create-backwards-compatibility-theme($theme) {
-  @if not map.get($theme, color) {
-    @return $theme;
-  }
-  $color: map.get($theme, color);
-  @return map.merge($theme, $color);
-}
-
-// Validates the specified theme by ensuring that the optional color config defines
-// a primary, accent and warn palette. Returns the theme if no failures were found.
-@function _mat-validate-theme($theme) {
-  @if map.get($theme, color) {
-    $color: map.get($theme, color);
-    @if not map.get($color, primary) {
-      @error 'Theme does not define a valid "primary" palette.';
-    } @else if not map.get($color, accent) {
-      @error 'Theme does not define a valid "accent" palette.';
-    } @else if not map.get($color, warn) {
-      @error 'Theme does not define a valid "warn" palette.';
-    }
-  }
-  @return $theme;
-}
-
 $mat-black-theme-foreground: (
   base: white,
   divider: rgba(white, 0.12),
@@ -111,10 +70,9 @@ $mat-black-theme-background: (
   // If the legacy pattern is used, we generate a container object only with a dark-themed
   // configuration for the `color` theming part.
   @if $accent != null {
-    @return private-create-backwards-compatibility-theme(_mat-validate-theme((
-      _is-legacy-theme: true,
+    @return (
       color: _mat-create-black-color-config($primary, $accent, $warn),
-    )));
+    );
   }
   // If the map pattern is used (1), we just pass-through the configurations for individual
   // parts of the theming system, but update the `color` configuration if set. As explained
@@ -127,7 +85,7 @@ $mat-black-theme-background: (
     $warn: map-get($color-settings, warn);
     $result: map-merge($result, (color: _mat-create-black-color-config($primary, $accent, $warn)));
   }
-  @return private-create-backwards-compatibility-theme($result);
+  @return $result;
 }
 
 @include mat.core();
@@ -148,6 +106,10 @@ $blue-gray-black-accent: mat.define-palette(mat.$amber-palette, A200, A100, A400
 $blue-gray-black-warn: mat.define-palette(mat.$deep-orange-palette);
 $blue-gray-black-theme: mat-black-theme($blue-gray-black-primary, $blue-gray-black-accent, $blue-gray-black-warn);
 
+$black-progress-bar-primary: mat.define-palette(mat.$grey-palette, 100, 700, 100, 500);
+$black-progress-bar-theme: mat-black-theme($black-progress-bar-primary, $blue-gray-black-accent, $blue-gray-black-warn);
+
+
 @include mat.all-component-themes($indigo-pink-theme);
 
 .blue-gray {
@@ -161,6 +123,7 @@ $blue-gray-black-theme: mat-black-theme($blue-gray-black-primary, $blue-gray-bla
 
 .black {
   @include mat.all-component-colors($blue-gray-black-theme);
+  @include mat.progress-bar-color($black-progress-bar-theme)
 }
 
 html, body {

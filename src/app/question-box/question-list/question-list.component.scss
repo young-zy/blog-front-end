@@ -13,6 +13,10 @@
   }
 }
 
+.mat-progress-bar-buffer {
+  background-color: white;
+}
+
 .mat-standard-chip {
   &:hover::after {
     opacity: 0;
