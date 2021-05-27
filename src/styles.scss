@@ -1,17 +1,60 @@
+@use '~@angular/material' as mat;
+@use 'sass:map';
+@use 'sass:meta';
+@use '~@angular/material/core/theming/palette';
 /* You can add global styles to this file, and also import other style files */
 
-@import '~@angular/material/theming';
+// Creates a backwards compatible theme. Previously in Angular Material, theme objects
+// contained the color configuration directly. With the recent refactoring of the theming
+// system to allow for density and typography configurations, this is no longer the case.
+// To ensure that constructed themes which will be passed to custom theme mixins do not break,
+// we copy the color configuration and put its properties at the top-level of the theme object.
+// Here is an example of a pattern that should still work until it's officially marked as a
+// breaking change:
+//
+//    @mixin my-custom-component-theme($theme) {
+//      .my-comp {
+//        background-color: mat-color(map-get($theme, primary));
+//      }
+//    }
+//
+// Note that the `$theme.primary` key does usually not exist since the color configuration
+// is stored in `$theme.color` which contains a property for `primary`. This method copies
+// the map from `$theme.color` to `$theme` for backwards compatibility.
+@function private-create-backwards-compatibility-theme($theme) {
+  @if not map.get($theme, color) {
+    @return $theme;
+  }
+  $color: map.get($theme, color);
+  @return map.merge($theme, $color);
+}
+
+// Validates the specified theme by ensuring that the optional color config defines
+// a primary, accent and warn palette. Returns the theme if no failures were found.
+@function _mat-validate-theme($theme) {
+  @if map.get($theme, color) {
+    $color: map.get($theme, color);
+    @if not map.get($color, primary) {
+      @error 'Theme does not define a valid "primary" palette.';
+    } @else if not map.get($color, accent) {
+      @error 'Theme does not define a valid "accent" palette.';
+    } @else if not map.get($color, warn) {
+      @error 'Theme does not define a valid "warn" palette.';
+    }
+  }
+  @return $theme;
+}
 
 $mat-black-theme-foreground: (
   base: white,
-  divider: $light-dividers,
-  dividers: $light-dividers,
-  disabled: $light-disabled-text,
+  divider: rgba(white, 0.12),
+  dividers: rgba(white, 0.12),
+  disabled: rgba(white, 0.5),
   disabled-button: rgba(white, 0.3),
-  disabled-text: $light-disabled-text,
+  disabled-text: rgba(white, 0.5),
   elevation: black,
-  hint-text: $light-disabled-text,
-  secondary-text: $light-secondary-text,
+  hint-text: rgba(white, 0.5),
+  secondary-text: rgba(white, 0.7),
   icon: white,
   icons: white,
   text: white,
@@ -23,25 +66,37 @@ $mat-black-theme-foreground: (
 // Background palette for dark themes.
 $mat-black-theme-background: (
   status-bar: black,
-  app-bar: map-get($mat-grey, 900),
+  app-bar: map-get(mat.$grey-palette, 900),
   background: black,
   hover: rgba(white, 0.04),
-  card: map-get($mat-grey, 900),
-  dialog: map-get($mat-grey, 900),
+  card: map-get(mat.$grey-palette, 900),
+  dialog: map-get(mat.$grey-palette, 900),
   disabled-button: rgba(white, 0.12),
-  raised-button: map-get($mat-grey, 800),
-  focused-button: $light-focused,
-  selected-button: map-get($mat-grey, 900),
-  selected-disabled-button: map-get($mat-grey, 800),
+  raised-button: map-get(mat.$grey-palette, 800),
+  focused-button: rgba(white, 0.12),
+  selected-button: map-get(mat.$grey-palette, 900),
+  selected-disabled-button: map-get(mat.$grey-palette, 800),
   disabled-button-toggle: black,
-  unselected-chip: map-get($mat-grey, 700),
+  unselected-chip: map-get(mat.$grey-palette, 700),
   disabled-list-option: black,
-  tooltip: map-get($mat-grey, 700),
+  tooltip: map-get(mat.$grey-palette, 700),
 );
+
+@function _mat-create-black-color-config($primary, $accent, $warn: null) {
+  @return (
+    primary: $primary,
+    accent: $accent,
+    warn: if($warn != null, $warn, mat.define-palette(mat.$red-palette)),
+    is-dark: true,
+    foreground: $mat-black-theme-foreground,
+    background: $mat-black-theme-background,
+  );
+}
+
 
 // Creates a container object for a dark theme to be given to individual component theme mixins.
 // as it would break existing apps that set the parameter by name.
-@function mat-black-theme($primary, $accent: null, $warn: mat-palette($mat-red)) {
+@function mat-black-theme($primary, $accent: null, $warn: mat.define-palette(mat.$red-palette)) {
   // This function creates a container object for the individual component theme mixins. Consumers
   // can construct such an object by calling this function, or by building the object manually.
   // There are two possible ways to invoke this function in order to create such an object:
@@ -56,7 +111,7 @@ $mat-black-theme-background: (
   // If the legacy pattern is used, we generate a container object only with a dark-themed
   // configuration for the `color` theming part.
   @if $accent != null {
-    @return mat-private-create-backwards-compatibility-theme(_mat-validate-theme((
+    @return private-create-backwards-compatibility-theme(_mat-validate-theme((
       _is-legacy-theme: true,
       color: _mat-create-black-color-config($primary, $accent, $warn),
     )));
@@ -72,51 +127,40 @@ $mat-black-theme-background: (
     $warn: map-get($color-settings, warn);
     $result: map-merge($result, (color: _mat-create-black-color-config($primary, $accent, $warn)));
   }
-  @return mat-private-create-backwards-compatibility-theme(_mat-validate-theme($result));
+  @return private-create-backwards-compatibility-theme($result);
 }
 
-@function _mat-create-black-color-config($primary, $accent, $warn: null) {
-  @return (
-    primary: $primary,
-    accent: $accent,
-    warn: if($warn != null, $warn, mat-palette($mat-red)),
-    is-dark: true,
-    foreground: $mat-black-theme-foreground,
-    background: $mat-black-theme-background,
-  );
-}
+@include mat.core();
 
-@include mat-core();
+$indigo-pink-primary: mat.define-palette(mat.$indigo-palette);
+$indigo-pink-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+$indigo-pink-theme: mat.define-light-theme($indigo-pink-primary, $indigo-pink-accent);
 
-$indigo-pink-primary: mat-palette($mat-indigo);
-$indigo-pink-accent: mat-palette($mat-pink, A200, A100, A400);
-$indigo-pink-theme: mat-light-theme($indigo-pink-primary, $indigo-pink-accent);
+//@include mat.all-component-themes($indigo-pink-theme);
 
-//@include angular-material-theme($indigo-pink-theme);
+$blue-gray-primary: mat.define-palette(mat.$blue-grey-palette);
+$blue-gray-accent: mat.define-palette(mat.$amber-palette, A200, A100, A400);
+$blue-gray-warn: mat.define-palette(mat.$deep-orange-palette);
+$blue-gray-theme: mat.define-dark-theme($blue-gray-primary, $blue-gray-accent, $blue-gray-warn);
 
-$blue-gray-primary: mat-palette($mat-blue-grey);
-$blue-gray-accent: mat-palette($mat-amber, A200, A100, A400);
-$blue-gray-warn: mat-palette($mat-deep-orange);
-$blue-gray-theme: mat-dark-theme($blue-gray-primary, $blue-gray-accent, $blue-gray-warn);
-
-$blue-gray-black-primary: mat-palette($mat-grey, 900, 700, 900, 500);
-$blue-gray-black-accent: mat-palette($mat-amber, A200, A100, A400);
-$blue-gray-black-warn: mat-palette($mat-deep-orange);
+$blue-gray-black-primary: mat.define-palette(mat.$grey-palette, 900, 700, 900, 500);
+$blue-gray-black-accent: mat.define-palette(mat.$amber-palette, A200, A100, A400);
+$blue-gray-black-warn: mat.define-palette(mat.$deep-orange-palette);
 $blue-gray-black-theme: mat-black-theme($blue-gray-black-primary, $blue-gray-black-accent, $blue-gray-black-warn);
 
-@include angular-material-theme($indigo-pink-theme);
+@include mat.all-component-themes($indigo-pink-theme);
 
 .blue-gray {
-  @include angular-material-color($blue-gray-theme);
+  @include mat.all-component-colors($blue-gray-theme);
   $theme: 'blue-gray'
 }
 
 .indigo-pink {
-  //@include angular-material-color($indigo-pink-theme);
+  //@include mat.all-component-colors($indigo-pink-theme);
 }
 
 .black {
-  @include angular-material-color($blue-gray-black-theme);
+  @include mat.all-component-colors($blue-gray-black-theme);
 }
 
 html, body {
@@ -128,11 +172,11 @@ html, body {
 
 // Define a custom typography config that overrides the font-family as well as the
 // `headlines` and `body-1` levels.
-$custom-typography: mat-typography-config(
+$custom-typography: mat.define-typography-config(
   $font-family: 'Roboto, Noto Sans SC,  monospace',
 );
 
-@include angular-material-typography($custom-typography);
+@include mat.all-component-typographies($custom-typography);
 
 .cdk-overlay-container {
   .blue-gray & {
