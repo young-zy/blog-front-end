@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, SecurityContext } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -62,7 +62,10 @@ import { UploadAvatarComponent } from './upload-avatar/upload-avatar.component';
     FormsModule,
     ReactiveFormsModule,
     RecaptchaV3Module,
-    MarkdownModule.forRoot(),
+    // using specific option with FactoryProvider
+    MarkdownModule.forRoot({
+      sanitize: SecurityContext.NONE
+    }),
     FlexLayoutModule
   ],
   providers: [

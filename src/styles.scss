@@ -154,3 +154,15 @@ $custom-typography: mat.define-typography-config(
     color: darkslategray;
   }
 }
+
+.marked-header {
+  .head-link {
+    color: #6e6e6e;
+    visibility: hidden;
+  }
+
+  &:hover .head-link {
+    visibility: visible;
+  }
+}
+
