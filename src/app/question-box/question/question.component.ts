@@ -1,19 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { QuestionApiService } from '../question-api.service';
 import { Question } from '../../common/entities/question';
 import { UserService } from '../../common/user.service';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MarkdownService } from 'ngx-markdown';
 
 @Component({
   selector: 'app-question',
   templateUrl: './question.component.html',
   styleUrls: ['./question.component.scss']
 })
-export class QuestionComponent implements OnInit {
+export class QuestionComponent implements OnInit, OnDestroy {
 
   questionLoading = false;
 
@@ -23,11 +24,14 @@ export class QuestionComponent implements OnInit {
 
   question: Question | undefined;
 
+  private subscriptions: Array<Subscription> = [];
+
   constructor(private questionApi: QuestionApiService,
               private formBuilder: FormBuilder,
               private router: Router,
               private userService: UserService,
               private snackBar: MatSnackBar,
+              private markdownService: MarkdownService,
               private route: ActivatedRoute) {
   }
 
@@ -38,10 +42,28 @@ export class QuestionComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.params.subscribe(next => {
-      this.questionId = next.questionId;
-      this.loadQuestion();
-    });
+    this.subscriptions.push(
+      this.route.url.subscribe(next => {
+        this.markdownService.renderer.heading = (text, level) => {
+          const encodedText = encodeURI(text);
+          const escapedText = encodedText.toLowerCase().replace(/[^\w]+/g, '-');
+
+          return `
+              <h${level} id="${escapedText}" class="marked-header">
+                ${text}
+                <a title="Link to this heading" aria-hidden="true" class="head-link" href="${this.router.url}#${escapedText}">
+                  <i class="material-icons">link</i>
+                </a>
+              </h${level}>`;
+        };
+      })
+    );
+    this.subscriptions.push(
+      this.route.params.subscribe(next => {
+        this.questionId = next.questionId;
+        this.loadQuestion();
+      })
+    );
   }
 
   private loadQuestion(): void {
@@ -87,5 +109,11 @@ export class QuestionComponent implements OnInit {
         });
         console.log(error);
       });
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(subs => {
+      subs.unsubscribe();
+    });
   }
 }

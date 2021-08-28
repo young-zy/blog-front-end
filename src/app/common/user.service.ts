@@ -11,9 +11,7 @@ import { User } from './entities/user';
 export class UserService {
   // private selfInfoSource: ReplaySubject<User> = new ReplaySubject<boolean>(1);
   private selfInfoSource = new ReplaySubject<User>(1);
-  selfInfo = this.selfInfoSource.asObservable();
   private loginStateSource = new ReplaySubject<boolean>(1);
-  loginState = this.loginStateSource.asObservable();
 
   constructor(private http: HttpClient) {
     if (this.isTokenExpired()) {
@@ -25,15 +23,23 @@ export class UserService {
     }
   }
 
-  isTokenExpired(): boolean{
+  get selfInfo(): Observable<User> {
+    return this.selfInfoSource.asObservable();
+  }
+
+  get loginState(): Observable<boolean> {
+    return this.loginStateSource.asObservable();
+  }
+
+  isTokenExpired(): boolean {
     const expire = window.localStorage.getItem('expire');
     return !(expire != null && new Date(expire).getTime() > new Date().getTime());
   }
 
-  login(username: string, password: string): Observable<TokenResponse>{
-    return new Observable<TokenResponse>( (observer) => {
+  login(username: string, password: string): Observable<TokenResponse> {
+    return new Observable<TokenResponse>((observer) => {
       // check if token is valid
-      if (!this.isTokenExpired()){
+      if (!this.isTokenExpired()) {
         this.loginStateSource.next(true);
         observer.error('already logged in');
         return;

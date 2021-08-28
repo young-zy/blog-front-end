@@ -13,10 +13,6 @@ export class PostApiService {
   constructor(private http: HttpClient) {
   }
 
-  addPost(): Observable<Response> {
-    return this.http.post<Response>(`${environment.baseURL}`, {});
-  }
-
   getPostList(page: number = 1, size: number = 10): Observable<PostListResponse> {
     const params = new HttpParams()
       .set('page', String(page))
@@ -37,6 +33,10 @@ export class PostApiService {
     return this.http.get<ReplyListResponse>(`${environment.baseURL}/post/${postId}`, {
       params
     });
+  }
+
+  addPost(): Observable<Response> {
+    return this.http.post<Response>(`${environment.baseURL}`, {});
   }
 
   addReply(postId: number, email: string, replyContent: string): Observable<Response> {
