@@ -1,7 +1,7 @@
-@use '~@angular/material' as mat;
+@use '@angular/material' as mat;
 @use 'sass:map';
 @use 'sass:meta';
-@use '~@angular/material/core/theming/palette';
+//@use '@angular/material/core/theming/palette';
 /* You can add global styles to this file, and also import other style files */
 
 $mat-black-theme-foreground: (
