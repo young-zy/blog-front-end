@@ -46,6 +46,7 @@ export class PostListComponent implements OnInit, OnDestroy {
   public loadPosts(): void {
     this.postApiService.getPostList(this.currentPage, this.size).subscribe(resp => {
       this.postList = resp.posts;
+      console.log(this.postList);
       this.totalCount = resp.totalCount;
     });
   }

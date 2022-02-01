@@ -44,18 +44,7 @@ export class QuestionComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subscriptions.push(
       this.route.url.subscribe(next => {
-        this.markdownService.renderer.heading = (text, level) => {
-          const encodedText = encodeURI(text);
-          const escapedText = encodedText.toLowerCase().replace(/[^\w]+/g, '-');
-
-          return `
-              <h${level} id="${escapedText}" class="marked-header">
-                ${text}
-                <a title="Link to this heading" aria-hidden="true" class="head-link" href="${this.router.url}#${escapedText}">
-                  <i class="material-icons">link</i>
-                </a>
-              </h${level}>`;
-        };
+        console.log(next);
       })
     );
     this.subscriptions.push(
@@ -64,6 +53,17 @@ export class QuestionComponent implements OnInit, OnDestroy {
         this.loadQuestion();
       })
     );
+    this.markdownService.renderer.heading = (text, level) => {
+      // const encodedText = encodeURI(text);
+      // const escapedText = encodedText.toLowerCase().replace(/[^\w]+/g, '-');
+      return `
+              <h${level} id="${text}" class="marked-header">
+                ${text}
+                <a title="Link to this heading" aria-hidden="true" class="head-link" href="${this.router.url}#${text}">
+                  <i class="material-icons">link</i>
+                </a>
+              </h${level}>`;
+    };
   }
 
   private loadQuestion(): void {
