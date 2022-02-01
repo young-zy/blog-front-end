@@ -1,1 +1,14 @@
-<p>post-list works!</p>
+<mat-card
+  *ngFor="let post of postList"
+  style="margin: 32px; border: 64px;"
+>
+  <mat-card-title style="font-size: xxx-large;margin-bottom: 32px;margin-top: 16px;">
+    {{ post.title }}
+  </mat-card-title>
+  <div  style="max-height: 360px; overflow: hidden;">
+    <img *ngIf="post.image" mat-card-image loading="lazy" alt="post image" [src]="post.image">
+  </div>
+  <mat-card-content>
+    {{ post.content | markdownSummary }}
+  </mat-card-content>
+</mat-card>
