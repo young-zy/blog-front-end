@@ -1,0 +1,27 @@
+<mat-toolbar style="height: 64px;font-weight: 100;font-size: 12px">
+  <div fxLayout="row" fxLayoutAlign="center center" style="width: 100%;">
+    <div fxLayout="column" fxLayoutAlign="center center">
+      <div fxLayout="row">
+        <p style="margin: 0;">
+          Powered By:
+        </p>
+        <p style="margin-left: 8px;margin-bottom: 0;">
+          young-zy
+        </p>
+      </div>
+
+      <div fxLayout="row">
+        <div>Link exchange:</div>
+        <div class="link-list" fxLayout="row" fxLayoutAlign="start">
+          <a
+            *ngFor="let link of linkList"
+            [href]="link.href"
+            style="margin-left: 8px;"
+          >
+            {{ link.text }}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</mat-toolbar>
