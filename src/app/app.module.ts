@@ -30,6 +30,7 @@ import { TokenInterceptorService } from './common/interceptor/token-interceptor.
 import { NotFoundComponent } from './not-found/not-found.component';
 import { RECAPTCHA_BASE_URL, RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module } from 'ng-recaptcha';
 import { UploadAvatarComponent } from './upload-avatar/upload-avatar.component';
+import { FooterComponent } from './footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { UploadAvatarComponent } from './upload-avatar/upload-avatar.component';
     NavigationComponent,
     LoginDialogComponent,
     NotFoundComponent,
-    UploadAvatarComponent
+    UploadAvatarComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,
