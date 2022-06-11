@@ -1,6 +1,7 @@
 <div fxLayout="column" fxLayoutAlign="space-around stretch">
   <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-around">
-    <mat-card fxFlex="70" fxFlex.md="85" fxFlex.sm="95" fxFlex.xs="100" style="margin-top: 32px; padding: 28px">
+    <mat-card fxFlex="70" fxFlex.md="85" fxFlex.sm="95" fxFlex.xs="100"
+              style="margin-top: 32px; margin-bottom: 32px; padding: 28px">
       <mat-progress-bar *ngIf="questionLoading" mode="indeterminate"
                         style="position: relative; left: -28px; top: -28px; width: calc(100% + 56px)"></mat-progress-bar>
       <mat-card-content>
@@ -25,10 +26,12 @@
         <div style="margin-bottom: 32px; margin-top: 32px; height: 1px" *ngIf="question?.isAnswered || preview">
           <mat-divider></mat-divider>
         </div>
-        <div *ngIf="question?.isAnswered || preview" fxLayout="row" fxLayoutAlign="space-around start" style="margin-bottom: 32px;">
+        <div *ngIf="question?.isAnswered || preview" fxLayout="row" fxLayoutAlign="space-around start"
+             style="margin-bottom: 32px;">
           <div fxFlex="nogrow" class="mat-display-1" style="margin-bottom: 16px; margin-right: 16px">A:</div>
           <div fxFlex="auto">
-            <markdown ngPreserveWhitespaces emoji katex [data]=" preview ? answerContentControl.value : question?.answerContent"></markdown>
+            <markdown [data]=" preview ? answerContentControl.value : question?.answerContent" emoji katex
+                      ngPreserveWhitespaces></markdown>
           </div>
         </div>
       </mat-card-content>
@@ -49,7 +52,7 @@
         </mat-form-field>
       </mat-card-content>
       <mat-card-actions dir="rtl">
-        <button mat-raised-button color="accent" (click)="handleSubmit()"> 提交 </button>
+        <button (click)="handleSubmit()" color="accent" mat-raised-button> 提交</button>
         <mat-checkbox style="margin-right: 16px;" (change)="handlePreviewChange($event)">预览</mat-checkbox>
       </mat-card-actions>
     </mat-card>
