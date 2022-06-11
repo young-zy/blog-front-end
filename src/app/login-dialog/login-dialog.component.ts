@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { AbstractControl, FormBuilder, FormControl, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, UntypedFormBuilder, UntypedFormControl, ValidationErrors, Validators } from '@angular/forms';
 import { UserService } from '../common/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -12,16 +12,17 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class LoginDialogComponent implements OnInit {
 
   constructor(public dialogRef: MatDialogRef<LoginDialogComponent>,
-              private formBuilder: FormBuilder,
+              private formBuilder: UntypedFormBuilder,
               private userService: UserService,
-              private snackBar: MatSnackBar) { }
-
-  get usernameControl(): FormControl{
-    return this.loginForm.get('username') as FormControl;
+              private snackBar: MatSnackBar) {
   }
 
-  get passwordControl(): FormControl{
-    return this.loginForm.get('password') as FormControl;
+  get usernameControl(): UntypedFormControl {
+    return this.loginForm.get('username') as UntypedFormControl;
+  }
+
+  get passwordControl(): UntypedFormControl {
+    return this.loginForm.get('password') as UntypedFormControl;
   }
 
   private usernameExists = true;

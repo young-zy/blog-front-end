@@ -5,7 +5,7 @@ import { Question } from '../../common/entities/question';
 import { UserService } from '../../common/user.service';
 import { Observable, Subscription } from 'rxjs';
 import { MatCheckboxChange } from '@angular/material/checkbox';
-import { FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MarkdownService } from 'ngx-markdown';
 
@@ -27,7 +27,7 @@ export class QuestionComponent implements OnInit, OnDestroy {
   private subscriptions: Array<Subscription> = [];
 
   constructor(private questionApi: QuestionApiService,
-              private formBuilder: FormBuilder,
+              private formBuilder: UntypedFormBuilder,
               private router: Router,
               private userService: UserService,
               private snackBar: MatSnackBar,
