@@ -27,3 +27,7 @@
   padding: 16px;
   border-radius: 8px;
 }
+
+.content {
+  min-height: calc(100vh - 64px);
+}
