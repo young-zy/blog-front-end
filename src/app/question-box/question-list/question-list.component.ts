@@ -3,7 +3,7 @@ import { QuestionApiService } from '../question-api.service';
 import { Question } from '../../common/entities/question';
 import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
 import { ReCaptchaV3Service } from 'ng-recaptcha';
 
 @Component({
@@ -25,12 +25,15 @@ export class QuestionListComponent implements OnInit {
 
   filter = 'all';
 
-  get questionContentControl(): FormControl{
-    return this.questionForm.get('questionContent') as FormControl;
+  constructor(private questionApi: QuestionApiService,
+              private recaptchaV3Service: ReCaptchaV3Service,
+              private router: Router,
+              private route: ActivatedRoute,
+              private formBuilder: UntypedFormBuilder) {
   }
 
-  get emailControl(): FormControl{
-    return this.questionForm.get('email') as FormControl;
+  get questionContentControl(): UntypedFormControl {
+    return this.questionForm.get('questionContent') as UntypedFormControl;
   }
 
   questionForm = this.formBuilder.group({
@@ -38,17 +41,15 @@ export class QuestionListComponent implements OnInit {
     email: [undefined, [Validators.email]]
   });
 
-  constructor(private questionApi: QuestionApiService,
-              private recaptchaV3Service: ReCaptchaV3Service,
-              private router: Router,
-              private route: ActivatedRoute,
-              private formBuilder: FormBuilder) { }
+  get emailControl(): UntypedFormControl {
+    return this.questionForm.get('email') as UntypedFormControl;
+  }
 
   ngOnInit(): void {
     // load page and size from url
     this.route.queryParamMap.subscribe(value => {
       this.currentPage = parseInt(value.get('page') || '1', 10);
-      this.pageSize = parseInt( value.get('size') || '10', 10 );
+      this.pageSize = parseInt(value.get('size') || '10', 10);
       this.loadQuestions();
     });
   }
