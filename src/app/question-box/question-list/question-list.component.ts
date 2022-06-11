@@ -3,8 +3,9 @@ import { QuestionApiService } from '../question-api.service';
 import { Question } from '../../common/entities/question';
 import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ReCaptchaV3Service } from 'ng-recaptcha';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-question-list',
@@ -25,24 +26,36 @@ export class QuestionListComponent implements OnInit {
 
   filter = 'all';
 
+  questionForm = this.formBuilder.nonNullable.group({
+    questionContent: new FormControl(
+      '',
+      {
+        validators: [Validators.required],
+        nonNullable: true
+      }
+    ),
+    email: new FormControl(
+      '',
+      {
+        validators: [Validators.email],
+      }
+    ),
+  });
+
   constructor(private questionApi: QuestionApiService,
               private recaptchaV3Service: ReCaptchaV3Service,
               private router: Router,
               private route: ActivatedRoute,
-              private formBuilder: UntypedFormBuilder) {
+              private formBuilder: FormBuilder,
+              private snackBar: MatSnackBar) {
   }
 
-  get questionContentControl(): UntypedFormControl {
-    return this.questionForm.get('questionContent') as UntypedFormControl;
+  get questionContentControl(): FormControl {
+    return this.questionForm.get('questionContent') as FormControl;
   }
 
-  questionForm = this.formBuilder.group({
-    questionContent: [undefined, [Validators.required]],
-    email: [undefined, [Validators.email]]
-  });
-
-  get emailControl(): UntypedFormControl {
-    return this.questionForm.get('email') as UntypedFormControl;
+  get emailControl(): FormControl<string | null> {
+    return this.questionForm.controls.email;
   }
 
   ngOnInit(): void {
@@ -54,7 +67,60 @@ export class QuestionListComponent implements OnInit {
     });
   }
 
-  private loadQuestions(): void{
+  handlePageEvent(pageEvent: PageEvent): void {
+    this.currentPage = pageEvent.pageIndex;
+    if (pageEvent.previousPageIndex !== pageEvent.pageIndex || this.pageSize !== pageEvent.pageSize) {
+      this.pageSize = pageEvent.pageSize;
+      // jump to new page
+      this.router.navigate(['/question'], {queryParams: {page: this.currentPage + 1, size: this.pageSize}}).then();
+    }
+  }
+
+  handleFilterChange(newValue: string): void {
+    this.filter = newValue;
+    this.loadQuestions();
+  }
+
+  handleQuestionClick(questionId: number): void {
+    this.router.navigate([`/question/${questionId}`]).then();
+  }
+
+  handleNewQuestion(): void {
+    if (!this.questionForm.valid) {
+      return;
+    }
+    let email: string | null = this.emailControl.value;
+    if (email === '') {
+      email = null;
+    }
+    const recaptchaSubscription = this.recaptchaV3Service.execute('newQuestion')
+      .subscribe({
+        next: token => {
+          recaptchaSubscription.unsubscribe();
+          this.questionApi.newQuestion(token, this.questionContentControl.value, email).subscribe({
+            next: () => {
+              this.questionForm.reset();
+              this.loadQuestions();
+            },
+            error: error => {
+              // show error to users
+              this.snackBar.open('提交问题失败', 'Dismiss', {
+                duration: 3000
+              });
+              console.log(error);
+            }
+          });
+        }, error: error => {
+          this.snackBar.open('failed to execute captcha action', 'Dismiss', {
+            duration: 3000
+          });
+          console.log(error);
+          recaptchaSubscription.unsubscribe();
+        }
+      });
+  }
+
+  private loadQuestions(): void {
     this.questionListLoading = true;
     this.questionApi.getQuestions(this.currentPage, this.pageSize, this.filter).subscribe(
       data => {
@@ -66,50 +132,5 @@ export class QuestionListComponent implements OnInit {
         console.log(error);
       }
     );
-  }
-
-  handlePageEvent(pageEvent: PageEvent): void{
-    this.currentPage = pageEvent.pageIndex;
-    if (pageEvent.previousPageIndex !== pageEvent.pageIndex || this.pageSize !== pageEvent.pageSize){
-      this.pageSize = pageEvent.pageSize;
-      // jump to new page
-      this.router.navigate(['/question'], {queryParams: {page: this.currentPage + 1, size: this.pageSize}} ).then();
-    }
-  }
-
-  handleFilterChange(newValue: string): void{
-    this.filter = newValue;
-    this.loadQuestions();
-  }
-
-  handleQuestionClick(questionId: number): void{
-    this.router.navigate([`/question/${questionId}`]).then();
-  }
-
-  handleNewQuestion(): void {
-    if (!this.questionForm.valid) {
-      return;
-    }
-    let email: string | undefined = this.emailControl.value;
-    if (email === '') {
-      email = undefined;
-    }
-    const recaptchaSubscription = this.recaptchaV3Service.execute('newQuestion')
-      .subscribe(token => {
-        this.questionApi.newQuestion(token, this.questionContentControl.value, email).subscribe(
-          () => {
-            this.questionForm.reset();
-            this.loadQuestions();
-            recaptchaSubscription.unsubscribe();
-          },
-          error => {
-            // TODO show error to users
-            console.log(error);
-            recaptchaSubscription.unsubscribe();
-          });
-      }, error => {
-        console.log(error);
-        recaptchaSubscription.unsubscribe();
-      });
   }
 }

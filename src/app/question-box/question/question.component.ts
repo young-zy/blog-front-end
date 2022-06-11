@@ -5,7 +5,7 @@ import { Question } from '../../common/entities/question';
 import { UserService } from '../../common/user.service';
 import { Observable, Subscription } from 'rxjs';
 import { MatCheckboxChange } from '@angular/material/checkbox';
-import { UntypedFormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MarkdownService } from 'ngx-markdown';
 
@@ -26,16 +26,21 @@ export class QuestionComponent implements OnInit, OnDestroy {
 
   private subscriptions: Array<Subscription> = [];
 
+  answerContentControl = this.formBuilder.nonNullable.control(
+    '',
+    {
+      validators: [Validators.required]
+    }
+  );
+
   constructor(private questionApi: QuestionApiService,
-              private formBuilder: UntypedFormBuilder,
+              private formBuilder: FormBuilder,
               private router: Router,
               private userService: UserService,
               private snackBar: MatSnackBar,
               private markdownService: MarkdownService,
               private route: ActivatedRoute) {
   }
-
-  answerContentControl = this.formBuilder.control(undefined, [Validators.required]);
 
   get isLoggedIn(): Observable<boolean> {
     return this.userService.loginState;
@@ -80,15 +85,15 @@ export class QuestionComponent implements OnInit, OnDestroy {
       });
   }
 
-  handlePreviewChange(change: MatCheckboxChange): void{
+  handlePreviewChange(change: MatCheckboxChange): void {
     this.preview = change.checked;
   }
 
-  handleSubmit(): void{
+  handleSubmit(): void {
     if (!this.answerContentControl.valid) {
       return;
     }
-    if (this.questionId === -1){
+    if (this.questionId === -1) {
       return;
     }
     this.questionApi.answerQuestion(this.questionId, this.answerContentControl.value).subscribe(
