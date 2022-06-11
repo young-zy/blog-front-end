@@ -58,8 +58,8 @@ export class LoginDialogComponent implements OnInit {
     }
     this.usernameExists = true;
     this.passwordIncorrect = false;
-    this.userService.login(this.usernameControl.value, this.passwordControl.value).subscribe(
-      () => {
+    this.userService.login(this.usernameControl.value, this.passwordControl.value).subscribe({
+      next: () => {
         console.log('login success');
         this.snackBar.open('登录成功', 'Dismiss', {
           duration: 3000,
@@ -68,7 +68,7 @@ export class LoginDialogComponent implements OnInit {
         });
         this.dialogRef.close();
       },
-      error => {
+      error: error => {
         console.log(error);
         console.log('login failed');
         if (error.error.message === 'username does not exist') {
@@ -83,7 +83,6 @@ export class LoginDialogComponent implements OnInit {
           });
         }
       }
-    );
+    });
   }
-
 }
