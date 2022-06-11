@@ -9,7 +9,7 @@ import { Question, QuestionListResponse } from '../common/entities/question';
 })
 export class QuestionApiService {
 
-  newQuestion(token: string, questionContent: string, email: string | undefined): Observable<Response> {
+  newQuestion(token: string, questionContent: string, email: string | null): Observable<Response> {
     const headers = new HttpHeaders().set('captchaToken', token);
     return this.http.post<Response>(`${environment.baseURL}/question`, {
       questionContent,
