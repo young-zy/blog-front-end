@@ -26,6 +26,13 @@ export class QuestionComponent implements OnInit, OnDestroy {
 
   private subscriptions: Array<Subscription> = [];
 
+  answerContentControl = this.formBuilder.nonNullable.control(
+    '',
+    {
+      validators: [Validators.required]
+    }
+  );
+
   constructor(private questionApi: QuestionApiService,
               private formBuilder: FormBuilder,
               private router: Router,
@@ -34,8 +41,6 @@ export class QuestionComponent implements OnInit, OnDestroy {
               private markdownService: MarkdownService,
               private route: ActivatedRoute) {
   }
-
-  answerContentControl = this.formBuilder.control(undefined, [Validators.required]);
 
   get isLoggedIn(): Observable<boolean> {
     return this.userService.loginState;
@@ -80,15 +85,15 @@ export class QuestionComponent implements OnInit, OnDestroy {
       });
   }
 
-  handlePreviewChange(change: MatCheckboxChange): void{
+  handlePreviewChange(change: MatCheckboxChange): void {
     this.preview = change.checked;
   }
 
-  handleSubmit(): void{
+  handleSubmit(): void {
     if (!this.answerContentControl.valid) {
       return;
     }
-    if (this.questionId === -1){
+    if (this.questionId === -1) {
       return;
     }
     this.questionApi.answerQuestion(this.questionId, this.answerContentControl.value).subscribe(

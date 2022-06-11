@@ -11,38 +11,51 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class LoginDialogComponent implements OnInit {
 
+  loginForm = this.formBuilder.nonNullable.group({
+    username: new FormControl(
+      '',
+      {
+        validators: [Validators.required, this.usernameExistsValidator.bind(this)],
+        nonNullable: true,
+      }
+    ),
+    password: new FormControl(
+      '',
+      {
+        validators: [Validators.required, this.passwordValidator.bind(this)],
+        nonNullable: true,
+      }
+    ),
+  });
+
   constructor(public dialogRef: MatDialogRef<LoginDialogComponent>,
               private formBuilder: FormBuilder,
               private userService: UserService,
-              private snackBar: MatSnackBar) { }
-
-  get usernameControl(): FormControl{
-    return this.loginForm.get('username') as FormControl;
+              private snackBar: MatSnackBar) {
   }
 
-  get passwordControl(): FormControl{
-    return this.loginForm.get('password') as FormControl;
+  get usernameControl(): FormControl<string> {
+    return this.loginForm.controls.username;
   }
 
   private usernameExists = true;
   private passwordIncorrect = false;
 
-  loginForm = this.formBuilder.group({
-    username: [undefined, [Validators.required, this.usernameExistsValidator.bind(this)]],
-    password: [undefined, [Validators.required, this.passwordValidator.bind(this)]]
-  });
+  get passwordControl(): FormControl<string> {
+    return this.loginForm.controls.password;
+  }
 
   onNoClick(): void {
     this.dialogRef.close();
   }
 
-  usernameExistsValidator(control: AbstractControl): ValidationErrors | null{
+  usernameExistsValidator(control: AbstractControl): ValidationErrors | null {
     const res = this.usernameExists ? null : {usernameNotExist: control.value};
     this.usernameExists = true;
     return res;
   }
 
-  passwordValidator(control: AbstractControl): ValidationErrors | null{
+  passwordValidator(control: AbstractControl): ValidationErrors | null {
     const res = this.passwordIncorrect ? {passwordIncorrect: control.value} : null;
     this.passwordIncorrect = false;
     return res;
@@ -51,14 +64,14 @@ export class LoginDialogComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  formSubmit(): void{
-    if (!this.loginForm.valid){
+  formSubmit(): void {
+    if (!this.loginForm.valid) {
       return;
     }
     this.usernameExists = true;
     this.passwordIncorrect = false;
-    this.userService.login(this.usernameControl.value, this.passwordControl.value).subscribe(
-      () => {
+    this.userService.login(this.usernameControl.value, this.passwordControl.value).subscribe({
+      next: () => {
         console.log('login success');
         this.snackBar.open('登录成功', 'Dismiss', {
           duration: 3000,
@@ -67,7 +80,7 @@ export class LoginDialogComponent implements OnInit {
         });
         this.dialogRef.close();
       },
-      error => {
+      error: error => {
         console.log(error);
         console.log('login failed');
         if (error.error.message === 'username does not exist') {
@@ -82,7 +95,6 @@ export class LoginDialogComponent implements OnInit {
           });
         }
       }
-    );
+    });
   }
-
 }
