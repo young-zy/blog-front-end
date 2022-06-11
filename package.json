@@ -58,6 +58,18 @@
       "@angular/common": "^14.0.0",
       "@angular/core": "^14.0.0",
       "@angular/platform-browser": "^14.0.0"
+    },
+    "ng-recaptcha": {
+      "@angular/cdk": "^14.0.0",
+      "@angular/common": "^14.0.0",
+      "@angular/core": "^14.0.0",
+      "@angular/platform-browser": "^14.0.0"
+    },
+    "ngx-markdown": {
+      "@angular/cdk": "^14.0.0",
+      "@angular/common": "^14.0.0",
+      "@angular/core": "^14.0.0",
+      "@angular/platform-browser": "^14.0.0"
     }
   }
 }
