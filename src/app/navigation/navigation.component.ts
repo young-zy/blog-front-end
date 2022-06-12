@@ -25,9 +25,9 @@ export class NavigationComponent implements OnInit, OnDestroy {
 
   public user: User | undefined;
 
-  public loginState: Observable<boolean>;
+  public loginState$: Observable<boolean>;
 
-  public selfInfo: Observable<User>;
+  public selfInfo$: Observable<User>;
 
   private titleSubscription: Subscription | undefined;
 
@@ -44,12 +44,12 @@ export class NavigationComponent implements OnInit, OnDestroy {
               private location: Location,
               private userService: UserService,
               private overlayContainer: OverlayContainer) {
-    this.loginState = this.userService.loginState;
-    this.selfInfo = this.userService.selfInfo;
+    this.loginState$ = this.userService.loginState$;
+    this.selfInfo$ = this.userService.selfInfo$;
   }
 
   get avatar(): Observable<string> {
-    return this.selfInfo.pipe(map<User, string>(user => user.avatar === '' ? 'assets/avatar.webp' : user.avatar));
+    return this.selfInfo$.pipe(map<User, string>(user => user.avatar === '' ? 'assets/avatar.webp' : user.avatar));
   }
 
   changeTheme(themeName: string): void {
