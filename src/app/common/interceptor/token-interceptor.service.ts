@@ -26,20 +26,21 @@ export class TokenInterceptorService implements HttpInterceptor {
         const date = new Date(expire);
         const lag = date.getTime() - new Date().getTime();
         if (lag < 3600) {
-          this.http.get<TokenResponse>(`${environment.baseURL}/auth/token`).subscribe(
-            resp => {
+          this.http.get<TokenResponse>(`${environment.baseURL}/auth/token`).subscribe({
+            next: resp => {
               window.localStorage.setItem('token', resp.token);
               window.localStorage.setItem('expire', resp.expire);
             },
-            () => {
+            error: () => {
               console.log('token expired');
               window.localStorage.removeItem('token');
               window.localStorage.removeItem('expire');
-            });
+            }
+          });
         }
       }
     }
-    const request = req.clone( { headers: newHeaders } );
+    const request = req.clone({headers: newHeaders});
     return next.handle(request);
   }
 }
