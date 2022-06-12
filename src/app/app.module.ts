@@ -1,6 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, SecurityContext } from '@angular/core';
-
+import { ApplicationRef, NgModule, SecurityContext } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ServiceWorkerModule, SwUpdate } from '@angular/service-worker';
@@ -31,6 +30,7 @@ import { NotFoundComponent } from './not-found/not-found.component';
 import { RECAPTCHA_BASE_URL, RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module } from 'ng-recaptcha';
 import { UploadAvatarComponent } from './upload-avatar/upload-avatar.component';
 import { FooterComponent } from './footer/footer.component';
+import { concat, first, interval } from 'rxjs';
 
 @NgModule({
   declarations: [
@@ -88,18 +88,30 @@ import { FooterComponent } from './footer/footer.component';
   bootstrap: [AppComponent]
 })
 export class AppModule {
-  constructor(private updates: SwUpdate) {
-    updates.available.subscribe(event => {
-      console.log('current version is', event.current);
-      console.log('available version is', event.available);
-      updates.activateUpdate().then(() => {
-        document.location.reload();
-        console.log('The app is updating right now');
-      });
+  constructor(
+    private appRef: ApplicationRef,
+    private updates: SwUpdate
+  ) {
+    updates.versionUpdates.subscribe(event => {
+      switch (event.type) {
+        case 'VERSION_DETECTED':
+          console.log(`Downloading new app version: ${event.version.hash}`);
+          break;
+        case 'VERSION_READY':
+          console.log(`Current app version: ${event.currentVersion.hash}`);
+          console.log(`New app version ready for use: ${event.latestVersion.hash}`);
+          break;
+        case 'VERSION_INSTALLATION_FAILED':
+          console.log(`Failed to install app version '${event.version.hash}': ${event.error}`);
+          break;
+      }
     });
-    updates.activated.subscribe(event => {
-      console.log('old version was', event.previous);
-      console.log('new version is', event.current);
-    });
+    // Allow the app to stabilize first, before starting
+    // polling for updates with `interval()`.
+    const appIsStable$ = appRef.isStable.pipe(first(isStable => isStable));
+    const everySixHours$ = interval(6 * 60 * 60 * 1000);
+    const everySixHoursOnceAppIsStable$ = concat(appIsStable$, everySixHours$);
+
+    everySixHoursOnceAppIsStable$.subscribe(() => updates.checkForUpdate());
   }
 }
