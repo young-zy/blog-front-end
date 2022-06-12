@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { AbstractControl, FormBuilder, FormControl, ValidationErrors, Validators } from '@angular/forms';
 import { UserService } from '../common/user.service';
@@ -9,7 +9,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './login-dialog.component.html',
   styleUrls: ['./login-dialog.component.scss']
 })
-export class LoginDialogComponent implements OnInit {
+export class LoginDialogComponent {
 
   private nonNullableFormBuilder = this.formBuilder.nonNullable;
 
@@ -59,9 +59,6 @@ export class LoginDialogComponent implements OnInit {
     const res = this.passwordIncorrect ? {passwordIncorrect: control.value} : null;
     this.passwordIncorrect = false;
     return res;
-  }
-
-  ngOnInit(): void {
   }
 
   formSubmit(): void {
