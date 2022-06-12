@@ -26,15 +26,16 @@ export class QuestionListComponent implements OnInit {
 
   filter = 'all';
 
-  questionForm = this.formBuilder.nonNullable.group({
-    questionContent: new FormControl(
+  private nonNullableFormBuilder = this.formBuilder.nonNullable;
+
+  questionForm = this.nonNullableFormBuilder.group({
+    questionContent: this.nonNullableFormBuilder.control(
       '',
       {
         validators: [Validators.required],
-        nonNullable: true
       }
     ),
-    email: new FormControl(
+    email: this.nonNullableFormBuilder.control(
       '',
       {
         validators: [Validators.email],

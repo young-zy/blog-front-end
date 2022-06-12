@@ -11,19 +11,19 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class LoginDialogComponent implements OnInit {
 
-  loginForm = this.formBuilder.nonNullable.group({
-    username: new FormControl(
+  private nonNullableFormBuilder = this.formBuilder.nonNullable;
+
+  loginForm = this.nonNullableFormBuilder.group({
+    username: this.nonNullableFormBuilder.control(
       '',
       {
         validators: [Validators.required, this.usernameExistsValidator.bind(this)],
-        nonNullable: true,
       }
     ),
-    password: new FormControl(
+    password: this.nonNullableFormBuilder.control(
       '',
       {
         validators: [Validators.required, this.passwordValidator.bind(this)],
-        nonNullable: true,
       }
     ),
   });
