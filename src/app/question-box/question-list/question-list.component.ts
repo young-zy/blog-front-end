@@ -26,15 +26,16 @@ export class QuestionListComponent implements OnInit {
 
   filter = 'all';
 
-  questionForm = this.formBuilder.nonNullable.group({
-    questionContent: new FormControl(
+  private nonNullableFormBuilder = this.formBuilder.nonNullable;
+
+  questionForm = this.nonNullableFormBuilder.group({
+    questionContent: this.nonNullableFormBuilder.control(
       '',
       {
         validators: [Validators.required],
-        nonNullable: true
       }
     ),
-    email: new FormControl(
+    email: this.nonNullableFormBuilder.control(
       '',
       {
         validators: [Validators.email],
@@ -122,15 +123,15 @@ export class QuestionListComponent implements OnInit {
 
   private loadQuestions(): void {
     this.questionListLoading = true;
-    this.questionApi.getQuestions(this.currentPage, this.pageSize, this.filter).subscribe(
-      data => {
+    this.questionApi.getQuestions(this.currentPage, this.pageSize, this.filter).subscribe({
+      next: data => {
         this.questionList = data.questions;
         this.totCount = data.totalCount;
         this.questionListLoading = false;
       },
-      error => {
+      error: error => {
         console.log(error);
       }
-    );
+    });
   }
 }

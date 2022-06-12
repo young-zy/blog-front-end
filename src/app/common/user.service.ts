@@ -9,26 +9,25 @@ import { User } from './entities/user';
   providedIn: 'root'
 })
 export class UserService {
-  // private selfInfoSource: ReplaySubject<User> = new ReplaySubject<boolean>(1);
-  private selfInfoSource = new ReplaySubject<User>(1);
-  private loginStateSource = new ReplaySubject<boolean>(1);
+  private selfInfoSource$$ = new ReplaySubject<User>(1);
+  private loginStateSource$$ = new ReplaySubject<boolean>(1);
 
   constructor(private http: HttpClient) {
     if (this.isTokenExpired()) {
-      this.loginStateSource.next(false);
+      this.loginStateSource$$.next(false);
     } else {
-      this.loginStateSource.next(true);
+      this.loginStateSource$$.next(true);
       this.getSelf();
       // this.http.get<User>(`${environment.baseURL}/user`).pipe(share()).subscribe();
     }
   }
 
-  get selfInfo(): Observable<User> {
-    return this.selfInfoSource.asObservable();
+  get selfInfo$(): Observable<User> {
+    return this.selfInfoSource$$.asObservable();
   }
 
-  get loginState(): Observable<boolean> {
-    return this.loginStateSource.asObservable();
+  get loginState$(): Observable<boolean> {
+    return this.loginStateSource$$.asObservable();
   }
 
   isTokenExpired(): boolean {
@@ -40,22 +39,23 @@ export class UserService {
     return new Observable<TokenResponse>((observer) => {
       // check if token is valid
       if (!this.isTokenExpired()) {
-        this.loginStateSource.next(true);
+        this.loginStateSource$$.next(true);
         observer.error('already logged in');
         return;
       }
       this.http.post<TokenResponse>(`${environment.baseURL}/login`, {
         username,
         password
-      }).subscribe(resp => {
-          this.loginStateSource.next(true);
+      }).subscribe({
+        next: resp => {
+          this.loginStateSource$$.next(true);
           window.localStorage.setItem('token', resp.token);
           window.localStorage.setItem('expire', resp.expire);
           this.getSelf();
           observer.next(resp);
         },
-        error => observer.error(error)
-      );
+        error: error => observer.error(error)
+      });
       return;
     });
   }
@@ -64,7 +64,7 @@ export class UserService {
     window.localStorage.removeItem('token');
     window.localStorage.removeItem('expire');
     window.sessionStorage.removeItem('user');
-    this.loginStateSource.next(false);
+    this.loginStateSource$$.next(false);
   }
 
   getSelf(): void {
@@ -72,11 +72,11 @@ export class UserService {
     if (userStr == null) {
       this.http.get<User>(`${environment.baseURL}/user`).subscribe(next => {
         window.sessionStorage.setItem('user', JSON.stringify(next));
-        this.selfInfoSource.next(next);
+        this.selfInfoSource$$.next(next);
       });
     } else {
       const user = JSON.parse(userStr) as User;
-      this.selfInfoSource.next(user);
+      this.selfInfoSource$$.next(user);
     }
   }
 }

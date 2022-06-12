@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 
@@ -7,15 +7,12 @@ import { Location } from '@angular/common';
   templateUrl: './not-found.component.html',
   styleUrls: ['./not-found.component.scss']
 })
-export class NotFoundComponent implements OnInit {
+export class NotFoundComponent {
 
   constructor(
     private location: Location,
     private router: Router
   ) {
-  }
-
-  ngOnInit(): void {
   }
 
   backToIndex(): void {

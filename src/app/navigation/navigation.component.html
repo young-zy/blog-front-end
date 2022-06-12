@@ -17,20 +17,21 @@
               matTooltip="theme picker">
         <mat-icon>format_color_fill</mat-icon>
       </button>
-      <button (click)="openLoginDialog()" *ngIf="!(loginState | async)" aria-label="button used to login" mat-button
+      <button (click)="openLoginDialog()" *ngIf="(loginState$ | async) === false" aria-label="button used to login"
+              mat-button
               matTooltip="theme picker">
         登录
       </button>
-      <button *ngIf="(loginState | async)" [matMenuTriggerFor]="menu" color="accent" mat-icon-button
+      <button *ngIf="(loginState$ | async)" [matMenuTriggerFor]="menu" color="accent" mat-icon-button
               style="margin-left: 16px">
         <img [src]="avatar | async" alt="avatar" height="100%" mat-card-avatar style="border-radius: 50%" width="100%"/>
       </button>
       <mat-menu #menu="matMenu">
         <ng-template matMenuContent>
-          <div *ngIf=" (selfInfo | async) " class="user-card" fxLayout="column" fxLayoutAlign="center center">
+          <div *ngIf=" (selfInfo$ | async) " class="user-card" fxLayout="column" fxLayoutAlign="center center">
             <img [src]="avatar | async" alt="avatar" height="80px" style="border-radius: 50%" width="80px"/>
-            <h2 class="menu-username" style="margin-bottom: 0;">{{ (selfInfo | async)?.username }}</h2>
-            <h4 class="menu-email">{{ (selfInfo | async)?.email }}</h4>
+            <h2 class="menu-username" style="margin-bottom: 0;">{{ (selfInfo$ | async)?.username }}</h2>
+            <h4 class="menu-email">{{ (selfInfo$ | async)?.email }}</h4>
             <button (click)="logoutClicked()" color="warn" mat-flat-button>登出</button>
           </div>
         </ng-template>
