@@ -123,15 +123,15 @@ export class QuestionListComponent implements OnInit {
 
   private loadQuestions(): void {
     this.questionListLoading = true;
-    this.questionApi.getQuestions(this.currentPage, this.pageSize, this.filter).subscribe(
-      data => {
+    this.questionApi.getQuestions(this.currentPage, this.pageSize, this.filter).subscribe({
+      next: data => {
         this.questionList = data.questions;
         this.totCount = data.totalCount;
         this.questionListLoading = false;
       },
-      error => {
+      error: error => {
         console.log(error);
       }
-    );
+    });
   }
 }

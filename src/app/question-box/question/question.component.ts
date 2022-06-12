@@ -71,24 +71,6 @@ export class QuestionComponent implements OnInit, OnDestroy {
     };
   }
 
-  private loadQuestion(): void {
-    this.questionLoading = true;
-    this.questionApi.getQuestion(this.questionId).subscribe(next => {
-        this.question = next;
-        this.questionLoading = false;
-      },
-      error => {
-        console.log(error);
-        if (error.status === 404) {
-          this.router.navigate(['/NotFound'], {skipLocationChange: true}).then();
-        }
-      });
-  }
-
-  handlePreviewChange(change: MatCheckboxChange): void {
-    this.preview = change.checked;
-  }
-
   handleSubmit(): void {
     if (!this.answerContentControl.valid) {
       return;
@@ -96,8 +78,8 @@ export class QuestionComponent implements OnInit, OnDestroy {
     if (this.questionId === -1) {
       return;
     }
-    this.questionApi.answerQuestion(this.questionId, this.answerContentControl.value).subscribe(
-      () => {
+    this.questionApi.answerQuestion(this.questionId, this.answerContentControl.value).subscribe({
+      next: () => {
         this.snackBar.open('回答成功', undefined, {
           duration: 3000,
           verticalPosition: 'top',
@@ -106,14 +88,15 @@ export class QuestionComponent implements OnInit, OnDestroy {
         this.answerContentControl.reset();
         this.loadQuestion();
       },
-      error => {
+      error: error => {
         this.snackBar.open('回答失败', undefined, {
           duration: 3000,
           verticalPosition: 'top',
           horizontalPosition: 'center'
         });
         console.log(error);
-      });
+      }
+    });
   }
 
   ngOnDestroy(): void {
