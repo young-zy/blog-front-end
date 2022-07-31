@@ -1,16 +1,45 @@
 import { Component, OnInit } from '@angular/core';
 import { QuestionApiService } from '../question-api.service';
 import { Question } from '../../common/entities/question';
-import { PageEvent } from '@angular/material/paginator';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ReCaptchaV3Service } from 'ng-recaptcha';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatListModule } from '@angular/material/list';
+import { MatChipsModule } from '@angular/material/chips';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatRippleModule } from '@angular/material/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
+  standalone: true,
   selector: 'app-question-list',
   templateUrl: './question-list.component.html',
-  styleUrls: ['./question-list.component.scss']
+  styleUrls: ['./question-list.component.scss'],
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatProgressBarModule,
+    MatPaginatorModule,
+    MatDividerModule,
+    MatListModule,
+    MatChipsModule,
+    ReactiveFormsModule,
+    FlexLayoutModule,
+    MatInputModule,
+    MatButtonModule,
+    MatRippleModule,
+  ]
 })
 export class QuestionListComponent implements OnInit {
 

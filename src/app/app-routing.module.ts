@@ -1,8 +1,6 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { NotFoundComponent } from './not-found/not-found.component';
+import { Routes } from '@angular/router';
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: '',
     redirectTo: '/question',
@@ -10,24 +8,18 @@ const routes: Routes = [
   },
   {
     path: 'blog',
-    loadChildren: () => import('./blog/blog.module').then(m => m.BlogModule)
+    loadChildren: () => import('./blog/blog-routing.module').then(m => m.routes)
   },
   {
     path: 'question',
-    loadChildren: () => import('./question-box/question-box.module').then(m => m.QuestionBoxModule)
+    loadChildren: () => import('./question-box/question-box-routing.module').then(m => m.routes)
   },
   {
     path: 'NotFound',
-    component: NotFoundComponent
+    loadComponent: () => import('./not-found/not-found.component').then(m => m.NotFoundComponent)
   },
   {
     path: '**',
     redirectTo: '/NotFound'
   }
 ];
-
-@NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
-})
-export class AppRoutingModule { }

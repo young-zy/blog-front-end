@@ -1,18 +1,45 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { DOCUMENT, Location } from '@angular/common';
+import { CommonModule, DOCUMENT, Location } from '@angular/common';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable, Subscription } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { UserService } from '../common/user.service';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { LoginDialogComponent } from '../login-dialog/login-dialog.component';
 import { TitleService } from '../common/title.service';
 import { User } from '../common/entities/user';
 import { OverlayContainer } from '@angular/cdk/overlay';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatIconModule } from '@angular/material/icon';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { RouterModule } from '@angular/router';
+import { FooterComponent } from '../footer/footer.component';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
+  standalone: true,
   selector: 'app-navigation',
   templateUrl: './navigation.component.html',
+  imports: [
+    MatDialogModule,
+    MatMenuModule,
+    MatSidenavModule,
+    MatToolbarModule,
+    MatIconModule,
+    FlexLayoutModule,
+    MatRadioModule,
+    CommonModule,
+    MatButtonModule,
+    MatTooltipModule,
+    RouterModule,
+    FooterComponent,
+    MatCardModule
+  ],
   styleUrls: ['./navigation.component.scss']
 })
 export class NavigationComponent implements OnInit, OnDestroy {

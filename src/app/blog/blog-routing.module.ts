@@ -1,24 +1,14 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { PostListComponent } from './post-list/post-list.component';
-import { PostComponent } from './post/post.component';
+import { Routes } from '@angular/router';
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: '',
     data: {title: 'Blog'},
-    component: PostListComponent
+    loadComponent: () => import('./post-list/post-list.component').then(c => c.PostListComponent)
   },
   {
     path: '',
     data: {title: 'Blog'},
-    component: PostComponent
+    loadComponent: () => import('./post/post.component').then(c => c.PostComponent)
   }
 ];
-
-@NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
-})
-export class BlogRoutingModule {
-}

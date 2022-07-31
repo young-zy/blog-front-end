@@ -3,10 +3,19 @@ import { PostApiService } from '../post-api.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Post } from '../../common/entities/post';
 import { Subscription } from 'rxjs';
+import { MatCardModule } from '@angular/material/card';
+import { CommonModule } from '@angular/common';
+import { MarkdownSummaryPipe } from '../markdown-summary.pipe';
 
 @Component({
+  standalone: true,
   selector: 'app-post-list',
   templateUrl: './post-list.component.html',
+  imports: [
+    MatCardModule,
+    CommonModule,
+    MarkdownSummaryPipe
+  ],
   styleUrls: ['./post-list.component.scss']
 })
 export class PostListComponent implements OnInit, OnDestroy {
