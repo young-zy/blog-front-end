@@ -2,11 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { TitleService } from './common/title.service';
 import { filter, map, mergeMap } from 'rxjs/operators';
+import { NavigationComponent } from './navigation/navigation.component';
 
 @Component({
+  standalone: true,
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  imports: [
+    NavigationComponent
+  ],
 })
 export class AppComponent implements OnInit{
   title = 'blog';

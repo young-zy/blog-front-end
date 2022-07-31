@@ -4,15 +4,39 @@ import { QuestionApiService } from '../question-api.service';
 import { Question } from '../../common/entities/question';
 import { UserService } from '../../common/user.service';
 import { Observable, Subscription } from 'rxjs';
-import { MatCheckboxChange } from '@angular/material/checkbox';
-import { FormBuilder, Validators } from '@angular/forms';
+import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MarkdownService } from 'ngx-markdown';
+import { MarkdownModule, MarkdownService } from 'ngx-markdown';
 import { DomSanitizer } from '@angular/platform-browser';
+import { MatCardModule } from '@angular/material/card';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatChipsModule } from '@angular/material/chips';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { CommonModule } from '@angular/common';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
+  standalone: true,
   selector: 'app-question',
   templateUrl: './question.component.html',
+  imports: [
+    MatCardModule,
+    MatProgressBarModule,
+    MatChipsModule,
+    FlexLayoutModule,
+    CommonModule,
+    MatDividerModule,
+    MarkdownModule,
+    MatFormFieldModule,
+    ReactiveFormsModule,
+    MatInputModule,
+    MatCheckboxModule,
+    MatButtonModule
+  ],
   styleUrls: ['./question.component.scss']
 })
 export class QuestionComponent implements OnInit, OnDestroy {

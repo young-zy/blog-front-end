@@ -1,12 +1,27 @@
 import { Component } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
-import { AbstractControl, FormBuilder, FormControl, ValidationErrors, Validators } from '@angular/forms';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { AbstractControl, FormBuilder, FormControl, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { UserService } from '../common/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
+  standalone: true,
   selector: 'app-login-dialog',
   templateUrl: './login-dialog.component.html',
+  imports: [
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    FlexLayoutModule,
+    CommonModule,
+    MatButtonModule,
+    MatInputModule
+  ],
   styleUrls: ['./login-dialog.component.scss']
 })
 export class LoginDialogComponent {
