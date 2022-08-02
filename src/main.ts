@@ -19,13 +19,13 @@ if (environment.production) {
 
 bootstrapApplication(AppComponent, {
   providers: [
-    importProvidersFrom(HttpClientModule),
-    importProvidersFrom(RouterModule.forRoot(routes)),
-    importProvidersFrom(ServiceWorkerModule.register('ngsw-worker.js', {enabled: environment.production})),
-    importProvidersFrom(RecaptchaV3Module),
-    importProvidersFrom(MatSnackBarModule),
-    importProvidersFrom(BrowserAnimationsModule),
     importProvidersFrom(
+      HttpClientModule,
+      RouterModule.forRoot(routes),
+      ServiceWorkerModule.register('ngsw-worker.js', {enabled: environment.production}),
+      RecaptchaV3Module,
+      MatSnackBarModule,
+      BrowserAnimationsModule,
       // using specific option with FactoryProvider
       MarkdownModule.forRoot({
         sanitize: SecurityContext.NONE
