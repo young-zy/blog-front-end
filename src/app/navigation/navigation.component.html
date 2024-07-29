@@ -19,7 +19,7 @@
       </button>
       <button (click)="openLoginDialog()" *ngIf="(loginState$ | async) === false" aria-label="button used to login"
               mat-button
-              matTooltip="theme picker">
+              matTooltip="login button">
         登录
       </button>
       <button *ngIf="(loginState$ | async)" [matMenuTriggerFor]="menu" color="accent" mat-icon-button
