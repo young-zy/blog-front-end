@@ -36,7 +36,7 @@ jobs:
     needs: build
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v4.1.7
       - name: Download build
         uses: actions/download-artifact@v4.1.8
         with:
@@ -46,6 +46,10 @@ jobs:
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
           ARGS: "-rltgoDzvO --delete"
+          SCRIPT_BEFORE: |
+            whoami
+            pwd
+            ls -al
           SOURCE: "deploy_dist/blog/"
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
           REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
