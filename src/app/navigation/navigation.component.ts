@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, DOCUMENT, Location } from '@angular/common';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable, Subscription } from 'rxjs';
@@ -20,7 +20,7 @@ import { FooterComponent } from '../footer/footer.component';
 import { MatCardModule } from '@angular/material/card';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   selector: 'app-navigation',
   templateUrl: './navigation.component.html',
@@ -47,8 +47,6 @@ export class NavigationComponent implements OnInit, OnDestroy {
 
   public title = '';
 
-  public user: User | undefined;
-
   public loginState$: Observable<boolean>;
 
   public selfInfo$: Observable<User>;
@@ -64,7 +62,8 @@ export class NavigationComponent implements OnInit, OnDestroy {
               private titleService: TitleService,
               private location: Location,
               private userService: UserService,
-              private overlayContainer: OverlayContainer) {
+              private overlayContainer: OverlayContainer,
+              private changeDetectorRef: ChangeDetectorRef) {
     this.isHandset$ = this.breakpointObserver.observe(Breakpoints.Handset).pipe(map(result => result.matches), shareReplay());
     this.loginState$ = this.userService.loginState$;
     this.selfInfo$ = this.userService.selfInfo$;
@@ -100,7 +99,6 @@ export class NavigationComponent implements OnInit, OnDestroy {
   }
 
   backClicked(): void {
-    console.log('back button clicked');
     this.location.back();
   }
 
@@ -111,6 +109,7 @@ export class NavigationComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.titleSubscription = this.titleService.currentTitle.subscribe(next => {
       this.title = next;
+      this.changeDetectorRef.markForCheck();
     });
     this.currentTheme = window.localStorage.getItem('theme') || this.Themes.indigoPink;
     this.document.body.classList.add(this.currentTheme);

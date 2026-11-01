@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { QuestionApiService } from '../question-api.service';
 import { Question } from '../../common/entities/question';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
@@ -17,7 +17,7 @@ import { MatRippleModule } from '@angular/material/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   selector: 'app-question-list',
   templateUrl: './question-list.component.html',
@@ -71,7 +71,8 @@ export class QuestionListComponent implements OnInit {
               private recaptchaV3Service: RecaptchaV3Service,
               private router: Router,
               private route: ActivatedRoute,
-              private snackBar: MatSnackBar) {
+              private snackBar: MatSnackBar,
+              private changeDetectorRef: ChangeDetectorRef) {
   }
 
   get questionContentControl(): FormControl {
@@ -144,14 +145,17 @@ export class QuestionListComponent implements OnInit {
 
   private loadQuestions(): void {
     this.questionListLoading = true;
+    this.changeDetectorRef.markForCheck();
     this.questionApi.getQuestions(this.currentPage, this.pageSize, this.filter).subscribe({
       next: data => {
         this.questionList = data.questions;
         this.totCount = data.totalCount;
         this.questionListLoading = false;
+        this.changeDetectorRef.markForCheck();
       },
       error: error => {
         this.questionListLoading = false;
+        this.changeDetectorRef.markForCheck();
         console.log(error);
       }
     });

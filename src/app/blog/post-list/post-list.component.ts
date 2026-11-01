@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { PostApiService } from '../post-api.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Post } from '../../common/entities/post';
@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
 import { MarkdownSummaryPipe } from '../markdown-summary.pipe';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   selector: 'app-post-list',
   templateUrl: './post-list.component.html',
@@ -29,35 +29,31 @@ export class PostListComponent implements OnInit, OnDestroy {
 
   public size = 10;
 
-  public loading = false;
-
-  private subscriptionArray: Subscription[] = [];
+  private routeSubscription?: Subscription;
 
   constructor(private postApiService: PostApiService,
               private router: Router,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private changeDetectorRef: ChangeDetectorRef) {
   }
 
   ngOnDestroy(): void {
-    this.subscriptionArray.forEach(subscription => {
-      subscription.unsubscribe();
-    });
+    this.routeSubscription?.unsubscribe();
   }
 
   ngOnInit(): void {
-    const subscription = this.route.queryParams.subscribe(value => {
+    this.routeSubscription = this.route.queryParams.subscribe(value => {
       this.currentPage = value.page;
       this.size = value.size;
       this.loadPosts();
     });
-    this.subscriptionArray.push(subscription);
   }
 
   public loadPosts(): void {
     this.postApiService.getPostList(this.currentPage, this.size).subscribe(resp => {
       this.postList = resp.posts;
-      console.log(this.postList);
       this.totalCount = resp.totalCount;
+      this.changeDetectorRef.markForCheck();
     });
   }
 }

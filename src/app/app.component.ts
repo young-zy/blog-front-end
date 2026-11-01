@@ -7,7 +7,7 @@ import { SwUpdate } from '@angular/service-worker';
 import { concat, interval } from 'rxjs';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   selector: 'app-root',
   templateUrl: './app.component.html',

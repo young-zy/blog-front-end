@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { AbstractControl, FormBuilder, FormControl, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { UserService } from '../common/user.service';
@@ -9,7 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   selector: 'app-login-dialog',
   templateUrl: './login-dialog.component.html',
@@ -44,7 +44,8 @@ export class LoginDialogComponent {
 
   constructor(public dialogRef: MatDialogRef<LoginDialogComponent>,
               private userService: UserService,
-              private snackBar: MatSnackBar) {
+              private snackBar: MatSnackBar,
+              private changeDetectorRef: ChangeDetectorRef) {
   }
 
   get usernameControl(): FormControl<string> {
@@ -104,6 +105,7 @@ export class LoginDialogComponent {
             duration: 3000
           });
         }
+        this.changeDetectorRef.markForCheck();
       }
     });
   }

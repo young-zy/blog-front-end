@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, SecurityContext, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnDestroy, OnInit, SecurityContext, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { QuestionApiService } from '../question-api.service';
 import { Question } from '../../common/entities/question';
@@ -18,7 +18,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   selector: 'app-question',
   templateUrl: './question.component.html',
@@ -46,7 +46,7 @@ export class QuestionComponent implements OnInit, OnDestroy {
 
   question: Question | undefined;
 
-  private subscriptions: Array<Subscription> = [];
+  private routeSubscription?: Subscription;
 
   answerContentControl = inject(FormBuilder).nonNullable.control(
     '',
@@ -63,6 +63,7 @@ export class QuestionComponent implements OnInit, OnDestroy {
     private markdownService: MarkdownService,
     private route: ActivatedRoute,
     private domSanitizer: DomSanitizer,
+    private changeDetectorRef: ChangeDetectorRef,
   ) {
   }
 
@@ -71,12 +72,10 @@ export class QuestionComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.subscriptions.push(
-      this.route.params.subscribe(next => {
+    this.routeSubscription = this.route.params.subscribe(next => {
         this.questionId = next.questionId;
         this.loadQuestion();
-      })
-    );
+      });
     this.markdownService.renderer.heading = ({ tokens, depth }) => {
       const text = tokens.map(token => token.raw).join('');
       const level = depth;
@@ -126,12 +125,16 @@ export class QuestionComponent implements OnInit, OnDestroy {
 
   private loadQuestion(): void {
     this.questionLoading = true;
+    this.changeDetectorRef.markForCheck();
     this.questionApi.getQuestion(this.questionId).subscribe({
       next: next => {
         this.question = next;
         this.questionLoading = false;
+        this.changeDetectorRef.markForCheck();
       },
       error: error => {
+        this.questionLoading = false;
+        this.changeDetectorRef.markForCheck();
         console.log(error);
         if (error.status === 404) {
           this.router.navigate(['/NotFound'], {skipLocationChange: true}).then();
@@ -141,8 +144,6 @@ export class QuestionComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach(subs => {
-      subs.unsubscribe();
-    });
+    this.routeSubscription?.unsubscribe();
   }
 }

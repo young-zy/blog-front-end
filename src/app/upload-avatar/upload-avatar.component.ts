@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-upload-avatar',
   templateUrl: './upload-avatar.component.html',
   styleUrls: ['./upload-avatar.component.scss']

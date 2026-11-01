@@ -39,6 +39,11 @@
               "src/manifest.webmanifest"
             ],
             "styles": [
+              "node_modules/@fontsource/roboto/latin-300.css",
+              "node_modules/@fontsource/roboto/latin-400.css",
+              "node_modules/@fontsource/roboto/latin-500.css",
+              "node_modules/@fontsource/noto-sans-sc/400.css",
+              "node_modules/@material-design-icons/font/filled.css",
               "src/styles.scss",
               "node_modules/prismjs/themes/prism-okaidia.css",
               "node_modules/katex/dist/katex.min.css"
@@ -125,6 +130,11 @@
               "src/manifest.webmanifest"
             ],
             "styles": [
+              "node_modules/@fontsource/roboto/latin-300.css",
+              "node_modules/@fontsource/roboto/latin-400.css",
+              "node_modules/@fontsource/roboto/latin-500.css",
+              "node_modules/@fontsource/noto-sans-sc/400.css",
+              "node_modules/@material-design-icons/font/filled.css",
               "src/styles.scss"
             ],
             "scripts": []
