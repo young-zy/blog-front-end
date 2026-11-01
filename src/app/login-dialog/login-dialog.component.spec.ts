@@ -1,5 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { MatDialogRef } from '@angular/material/dialog';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { LoginDialogComponent } from './login-dialog.component';
 
 describe('LoginDialogComponent', () => {
@@ -8,7 +11,8 @@ describe('LoginDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ LoginDialogComponent ]
+      imports: [LoginDialogComponent],
+      providers: [provideHttpClient(), provideHttpClientTesting(), { provide: MatDialogRef, useValue: { close() {} } }]
     })
     .compileComponents();
   });

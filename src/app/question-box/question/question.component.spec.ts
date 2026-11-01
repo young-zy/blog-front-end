@@ -1,3 +1,7 @@
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideMarkdown } from 'ngx-markdown';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { QuestionComponent } from './question.component';
@@ -8,7 +12,8 @@ describe('QuestionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ QuestionComponent ]
+      imports: [QuestionComponent],
+      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting(), provideMarkdown()]
     })
     .compileComponents();
   });

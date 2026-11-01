@@ -1,4 +1,4 @@
-import { ApplicationRef, Component, OnInit } from '@angular/core';
+import { ApplicationRef, Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { TitleService } from './common/title.service';
 import { filter, first, map, mergeMap } from 'rxjs/operators';
@@ -7,6 +7,7 @@ import { SwUpdate } from '@angular/service-worker';
 import { concat, interval } from 'rxjs';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   selector: 'app-root',
   templateUrl: './app.component.html',

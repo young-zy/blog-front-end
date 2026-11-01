@@ -1,15 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { AbstractControl, FormBuilder, FormControl, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { UserService } from '../common/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   selector: 'app-login-dialog',
   templateUrl: './login-dialog.component.html',
@@ -17,7 +17,6 @@ import { MatInputModule } from '@angular/material/input';
     ReactiveFormsModule,
     MatDialogModule,
     MatFormFieldModule,
-    FlexLayoutModule,
     CommonModule,
     MatButtonModule,
     MatInputModule
@@ -26,7 +25,7 @@ import { MatInputModule } from '@angular/material/input';
 })
 export class LoginDialogComponent {
 
-  private nonNullableFormBuilder = this.formBuilder.nonNullable;
+  private nonNullableFormBuilder = inject(FormBuilder).nonNullable;
 
   loginForm = this.nonNullableFormBuilder.group({
     username: this.nonNullableFormBuilder.control(
@@ -44,7 +43,6 @@ export class LoginDialogComponent {
   });
 
   constructor(public dialogRef: MatDialogRef<LoginDialogComponent>,
-              private formBuilder: FormBuilder,
               private userService: UserService,
               private snackBar: MatSnackBar) {
   }

@@ -8,7 +8,7 @@ describe('UploadAvatarComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [UploadAvatarComponent]
+      imports: [UploadAvatarComponent]
     })
       .compileComponents();
   });

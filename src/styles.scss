@@ -1,158 +1,179 @@
 @use '@angular/material' as mat;
-@use 'sass:map';
-@use 'sass:meta';
-//@use '@angular/material/core/theming/palette';
-/* You can add global styles to this file, and also import other style files */
-
-$mat-black-theme-foreground: (
-  base: white,
-  divider: rgba(white, 0.12),
-  dividers: rgba(white, 0.12),
-  disabled: rgba(white, 0.5),
-  disabled-button: rgba(white, 0.3),
-  disabled-text: rgba(white, 0.5),
-  elevation: black,
-  hint-text: rgba(white, 0.5),
-  secondary-text: rgba(white, 0.7),
-  icon: white,
-  icons: white,
-  text: white,
-  slider-min: white,
-  slider-off: rgba(white, 0.3),
-  slider-off-active: rgba(white, 0.3),
-);
-
-// Background palette for dark themes.
-$mat-black-theme-background: (
-  status-bar: black,
-  app-bar: map-get(mat.$grey-palette, 900),
-  background: black,
-  hover: rgba(white, 0.04),
-  card: map-get(mat.$grey-palette, 900),
-  dialog: map-get(mat.$grey-palette, 900),
-  disabled-button: rgba(white, 0.12),
-  raised-button: map-get(mat.$grey-palette, 800),
-  focused-button: rgba(white, 0.12),
-  selected-button: map-get(mat.$grey-palette, 900),
-  selected-disabled-button: map-get(mat.$grey-palette, 800),
-  disabled-button-toggle: black,
-  unselected-chip: map-get(mat.$grey-palette, 700),
-  disabled-list-option: black,
-  tooltip: map-get(mat.$grey-palette, 700),
-);
-
-@function _mat-create-black-color-config($primary, $accent, $warn: null) {
-  @return (
-    primary: $primary,
-    accent: $accent,
-    warn: if($warn != null, $warn, mat.define-palette(mat.$red-palette)),
-    is-dark: true,
-    foreground: $mat-black-theme-foreground,
-    background: $mat-black-theme-background,
-  );
-}
-
-
-// Creates a container object for a dark theme to be given to individual component theme mixins.
-// as it would break existing apps that set the parameter by name.
-@function mat-black-theme($primary, $accent: null, $warn: mat.define-palette(mat.$red-palette)) {
-  // This function creates a container object for the individual component theme mixins. Consumers
-  // can construct such an object by calling this function, or by building the object manually.
-  // There are two possible ways to invoke this function in order to create such an object:
-  //
-  //    (1) Passing in a map that holds optional configurations for individual parts of the
-  //        theming system. For `color` configurations, the function only expects the palettes
-  //        for `primary` and `accent` (and optionally `warn`). The function will expand the
-  //        shorthand into an actual configuration that can be consumed in `-color` mixins.
-  //    (2) Legacy pattern: Passing in the palettes as parameters. This is not as flexible
-  //        as passing in a configuration map because only the `color` system can be configured.
-  //
-  // If the legacy pattern is used, we generate a container object only with a dark-themed
-  // configuration for the `color` theming part.
-  @if $accent != null {
-    @return (
-      color: _mat-create-black-color-config($primary, $accent, $warn),
-    );
-  }
-  // If the map pattern is used (1), we just pass-through the configurations for individual
-  // parts of the theming system, but update the `color` configuration if set. As explained
-  // above, the color shorthand will be expanded to an actual dark-themed color configuration.
-  $result: $primary;
-  @if map-get($primary, color) {
-    $color-settings: map-get($primary, color);
-    $primary: map-get($color-settings, primary);
-    $accent: map-get($color-settings, accent);
-    $warn: map-get($color-settings, warn);
-    $result: map-merge($result, (color: _mat-create-black-color-config($primary, $accent, $warn)));
-  }
-  @return $result;
-}
-
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 @include mat.core();
 
-$indigo-pink-primary: mat.define-palette(mat.$indigo-palette);
-$indigo-pink-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
-$indigo-pink-theme: mat.define-light-theme($indigo-pink-primary, $indigo-pink-accent);
+$indigo-pink-primary: mat.m2-define-palette(mat.$m2-indigo-palette);
+$indigo-pink-accent: mat.m2-define-palette(mat.$m2-pink-palette, A200, A100, A400);
+$indigo-pink-theme: mat.m2-define-light-theme((
+  color: (primary: $indigo-pink-primary, accent: $indigo-pink-accent),
+  density: 0,
+));
 
-//@include mat.all-component-themes($indigo-pink-theme);
+$blue-gray-primary: mat.m2-define-palette(mat.$m2-blue-grey-palette);
+$blue-gray-accent: mat.m2-define-palette(mat.$m2-amber-palette, A200, A100, A400);
+$blue-gray-warn: mat.m2-define-palette(mat.$m2-deep-orange-palette);
+$blue-gray-theme: mat.m2-define-dark-theme((
+  color: (primary: $blue-gray-primary, accent: $blue-gray-accent, warn: $blue-gray-warn),
+));
 
-$blue-gray-primary: mat.define-palette(mat.$blue-grey-palette);
-$blue-gray-accent: mat.define-palette(mat.$amber-palette, A200, A100, A400);
-$blue-gray-warn: mat.define-palette(mat.$deep-orange-palette);
-$blue-gray-theme: mat.define-dark-theme($blue-gray-primary, $blue-gray-accent, $blue-gray-warn);
+$blue-gray-black-primary: mat.m2-define-palette(mat.$m2-grey-palette, 900, 700, 900, 500);
+$blue-gray-black-accent: mat.m2-define-palette(mat.$m2-amber-palette, A200, A100, A400);
+$blue-gray-black-warn: mat.m2-define-palette(mat.$m2-deep-orange-palette);
+$blue-gray-black-theme: mat.m2-define-dark-theme((
+  color: (
+    primary: $blue-gray-black-primary,
+    accent: $blue-gray-black-accent,
+    warn: $blue-gray-black-warn,
+  ),
+));
 
-$blue-gray-black-primary: mat.define-palette(mat.$grey-palette, 900, 700, 900, 500);
-$blue-gray-black-accent: mat.define-palette(mat.$amber-palette, A200, A100, A400);
-$blue-gray-black-warn: mat.define-palette(mat.$deep-orange-palette);
-$blue-gray-black-theme: mat-black-theme($blue-gray-black-primary, $blue-gray-black-accent, $blue-gray-black-warn);
-
-$black-progress-bar-primary: mat.define-palette(mat.$grey-palette, 100, 700, 100, 500);
-$black-progress-bar-theme: mat-black-theme($black-progress-bar-primary, $blue-gray-black-accent, $blue-gray-black-warn);
+$black-progress-bar-primary: mat.m2-define-palette(mat.$m2-grey-palette, 100, 700, 100, 500);
+$black-progress-bar-theme: mat.m2-define-dark-theme((
+  color: (
+    primary: $black-progress-bar-primary,
+    accent: $blue-gray-black-accent,
+    warn: $blue-gray-black-warn,
+  ),
+));
 
 
 @include mat.all-component-themes($indigo-pink-theme);
 
 .blue-gray {
   @include mat.all-component-colors($blue-gray-theme);
-  $theme: 'blue-gray'
-}
-
-.indigo-pink {
-  //@include mat.all-component-colors($indigo-pink-theme);
 }
 
 .black {
   @include mat.all-component-colors($blue-gray-black-theme);
-  @include mat.progress-bar-color($black-progress-bar-theme)
+  @include mat.progress-bar-color($black-progress-bar-theme);
+  .mat-sidenav-content {
+    background-color: #000;
+  }
+
+  .mat-mdc-card, .mat-mdc-menu-panel, .mat-mdc-dialog-surface {
+    background-color: #212121;
+  }
 }
+
+body.black {
+  background-color: #000;
+  color: #fff;
+}
+
+// Preserve the spacing of the pre-MDC Material cards used by this project.
+body .mat-mdc-card {
+  padding: 16px;
+  border-radius: 4px;
+}
+
+body .mat-mdc-card-content,
+body .mat-mdc-card-content:first-child,
+body .mat-mdc-card-content:last-child {
+  padding: 0;
+}
+
+body .mat-mdc-card-title {
+  margin-bottom: 16px;
+}
+
+body .mat-mdc-card-content:not(:last-child) {
+  margin-bottom: 16px;
+}
+
+body .mat-mdc-form-field {
+  --mat-form-field-filled-container-color: transparent;
+  --mat-form-field-filled-container-shape: 0;
+}
+
+.indigo-pink .mat-mdc-form-field {
+  --mat-form-field-filled-active-indicator-color: rgba(0, 0, 0, 0.7);
+  --mat-form-field-filled-hover-active-indicator-color: rgba(0, 0, 0, 0.87);
+  --mat-form-field-filled-focus-active-indicator-color: #ff4081;
+  --mat-form-field-filled-focus-label-text-color: #ff4081;
+}
+
+.blue-gray .mat-mdc-form-field,
+.black .mat-mdc-form-field {
+  --mat-form-field-filled-active-indicator-color: rgba(255, 255, 255, 0.8);
+  --mat-form-field-filled-hover-active-indicator-color: #fff;
+  --mat-form-field-filled-focus-active-indicator-color: #ffd740;
+  --mat-form-field-filled-focus-label-text-color: #ffd740;
+}
+
+.indigo-pink .mat-mdc-form-field-hint-wrapper { color: rgba(0, 0, 0, 0.7); }
+.blue-gray .mat-mdc-form-field-hint-wrapper,
+.black .mat-mdc-form-field-hint-wrapper { color: rgba(255, 255, 255, 0.8); }
 
 html, body {
   height: 100%;
   margin: 0;
 }
 
-//body { margin: 0; font-family: Roboto, 'Noto Sans SC', "Helvetica Neue", sans-serif; }
-
 // Define a custom typography config that overrides the font-family as well as the
 // `headlines` and `body-1` levels.
-$custom-typography: mat.define-typography-config(
-  $font-family: 'Roboto, Noto Sans SC,  monospace',
+$custom-typography: mat.m2-define-typography-config(
+  $font-family: 'Roboto, Noto Sans SC, monospace',
 );
 
 @include mat.all-component-typographies($custom-typography);
 
-.cdk-overlay-container {
-  .blue-gray & {
-    color: white;
-  }
+.indigo-pink .mat-mdc-paginator { background-color: #fff; }
+.blue-gray .mat-mdc-paginator { background-color: #424242; }
+.black .mat-mdc-paginator { background-color: #212121; }
 
-  .black & {
-    color: lightgray;
-  }
+.cdk-overlay-container.indigo-pink .mat-mdc-select-panel {
+  background-color: #fff;
+  --mat-option-selected-state-layer-color: rgba(0, 0, 0, 0.04);
+  --mat-option-hover-state-layer-color: rgba(0, 0, 0, 0.04);
+  --mat-option-focus-state-layer-color: rgba(0, 0, 0, 0.04);
+}
 
-  .indigo-pink & {
-    color: darkslategray;
-  }
+.cdk-overlay-container.blue-gray .mat-mdc-select-panel {
+  background-color: #424242;
+  --mat-option-selected-state-layer-color: rgba(255, 255, 255, 0.04);
+  --mat-option-hover-state-layer-color: rgba(255, 255, 255, 0.04);
+  --mat-option-focus-state-layer-color: rgba(255, 255, 255, 0.04);
+}
+
+.cdk-overlay-container.black .mat-mdc-select-panel {
+  background-color: #212121;
+  --mat-option-selected-state-layer-color: rgba(255, 255, 255, 0.04);
+  --mat-option-hover-state-layer-color: rgba(255, 255, 255, 0.04);
+  --mat-option-focus-state-layer-color: rgba(255, 255, 255, 0.04);
+}
+
+.login-dialog-panel .mat-mdc-dialog-surface {
+  padding: 24px;
+  border-radius: 4px;
+}
+
+.login-dialog-panel .mat-mdc-dialog-title {
+  padding: 0;
+  margin: 0 0 16px;
+  font-size: 20px;
+  line-height: 32px;
+  font-weight: 500;
+}
+
+.login-dialog-panel .mat-mdc-dialog-title::before { display: none; }
+.login-dialog-panel .mat-mdc-dialog-content { padding: 0; overflow: visible; }
+.login-dialog-panel .mat-mdc-dialog-actions { padding: 0; min-height: 52px; }
+
+.cdk-overlay-container.indigo-pink {
+  --mat-tooltip-container-color: #424242;
+  --mat-tooltip-supporting-text-color: #fff;
+}
+
+.cdk-overlay-container.blue-gray {
+  --mat-tooltip-container-color: #607d8b;
+  --mat-tooltip-supporting-text-color: #fff;
+}
+
+.cdk-overlay-container.black {
+  --mat-tooltip-container-color: #212121;
+  --mat-tooltip-supporting-text-color: #fff;
 }
 
 .marked-header {
@@ -165,4 +186,3 @@ $custom-typography: mat.define-typography-config(
     visibility: visible;
   }
 }
-

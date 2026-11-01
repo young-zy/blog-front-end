@@ -6,12 +6,15 @@
         <mat-icon>arrow_back</mat-icon>
       </button>
       <span>{{ title }}</span>
-      <span fxFlex="grow"></span>
+      <span class="grow"></span>
       <mat-menu #themeMenu="matMenu">
-        <mat-radio-button (click)="changeTheme(theme.value)" *ngFor="let theme of Themes | keyvalue"
-                          [checked]="currentTheme === theme.value"
-                          [value]="theme.value"
-                          class="theme-radio-button mat-menu-item">{{ theme.key }}</mat-radio-button>
+        <button mat-menu-item type="button" role="menuitemradio"
+                *ngFor="let theme of Themes | keyvalue"
+                [attr.aria-checked]="currentTheme === theme.value"
+                (click)="changeTheme(theme.value)">
+          <mat-icon>{{ currentTheme === theme.value ? 'radio_button_checked' : 'radio_button_unchecked' }}</mat-icon>
+          <span>{{ theme.key }}</span>
+        </button>
       </mat-menu>
       <button [matMenuTriggerFor]="themeMenu" aria-label="button used to open theme picker" mat-icon-button
               matTooltip="theme picker">
@@ -28,7 +31,7 @@
       </button>
       <mat-menu #menu="matMenu">
         <ng-template matMenuContent>
-          <div *ngIf=" (selfInfo$ | async) " class="user-card" fxLayout="column" fxLayoutAlign="center center">
+          <div *ngIf=" (selfInfo$ | async) " class="user-card flex flex-col justify-center items-center">
             <img [src]="avatar | async" alt="avatar" height="80px" style="border-radius: 50%" width="80px"/>
             <h2 class="menu-username" style="margin-bottom: 0;">{{ (selfInfo$ | async)?.username }}</h2>
             <h4 class="menu-email">{{ (selfInfo$ | async)?.email }}</h4>

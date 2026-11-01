@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule, DOCUMENT, Location } from '@angular/common';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable, Subscription } from 'rxjs';
@@ -13,8 +13,6 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
-import { FlexLayoutModule } from '@angular/flex-layout';
-import { MatRadioModule } from '@angular/material/radio';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
@@ -22,6 +20,7 @@ import { FooterComponent } from '../footer/footer.component';
 import { MatCardModule } from '@angular/material/card';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   selector: 'app-navigation',
   templateUrl: './navigation.component.html',
@@ -31,8 +30,6 @@ import { MatCardModule } from '@angular/material/card';
     MatSidenavModule,
     MatToolbarModule,
     MatIconModule,
-    FlexLayoutModule,
-    MatRadioModule,
     CommonModule,
     MatButtonModule,
     MatTooltipModule,
@@ -58,11 +55,8 @@ export class NavigationComponent implements OnInit, OnDestroy {
 
   private titleSubscription: Subscription | undefined;
 
-  isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
-    .pipe(
-      map(result => result.matches),
-      shareReplay()
-    );
+  isHandset$: Observable<boolean>;
+
 
   constructor(private breakpointObserver: BreakpointObserver,
               private dialog: MatDialog,
@@ -71,6 +65,7 @@ export class NavigationComponent implements OnInit, OnDestroy {
               private location: Location,
               private userService: UserService,
               private overlayContainer: OverlayContainer) {
+    this.isHandset$ = this.breakpointObserver.observe(Breakpoints.Handset).pipe(map(result => result.matches), shareReplay());
     this.loginState$ = this.userService.loginState$;
     this.selfInfo$ = this.userService.selfInfo$;
   }
@@ -93,8 +88,10 @@ export class NavigationComponent implements OnInit, OnDestroy {
 
   openLoginDialog(): void {
     this.dialog.open(LoginDialogComponent, {
-      width: '300px',
-      height: '270px'
+      width: '420px',
+      maxWidth: 'calc(100vw - 32px)',
+      minHeight: '270px',
+      panelClass: 'login-dialog-panel'
     });
   }
 

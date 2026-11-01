@@ -1,29 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { FlexLayoutModule } from '@angular/flex-layout';
-import { CommonModule } from '@angular/common';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   selector: 'app-footer',
   templateUrl: './footer.component.html',
   imports: [
-    MatToolbarModule,
-    FlexLayoutModule,
-    CommonModule
+    MatToolbarModule
   ],
   styleUrls: ['./footer.component.scss']
 })
-export class FooterComponent {
-
-  constructor() {
-  }
-
-  public linkList = [
-    {
-      href: 'https://kalacloud.com',
-      text: '卡拉云低代码工具'
-    }
-  ];
-
-}
+export class FooterComponent {}

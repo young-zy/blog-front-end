@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { PostApiService } from '../post-api.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Post } from '../../common/entities/post';
@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { MarkdownSummaryPipe } from '../markdown-summary.pipe';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   selector: 'app-post-list',
   templateUrl: './post-list.component.html',

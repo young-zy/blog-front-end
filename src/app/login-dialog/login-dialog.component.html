@@ -1,13 +1,10 @@
 <h1 mat-dialog-title>登录</h1>
-<form [formGroup]="loginForm" novalidate (ngSubmit)="formSubmit()">
-  <div mat-dialog-content fxLayout="column">
+<form class="login-form" [formGroup]="loginForm" novalidate (ngSubmit)="formSubmit()">
+  <div mat-dialog-content class="flex flex-col">
     <mat-form-field class="input" hideRequiredMarker>
       <mat-label>用户名</mat-label>
-      <label>
-        <input matInput placeholder="Ex. user" name="username"
-               formControlName="username"
-               required>
-      </label>
+      <input matInput placeholder="Ex. user" name="username"
+             formControlName="username" required>
       <mat-error *ngIf="usernameControl.errors?.required">
         用户名不能为空
       </mat-error>
@@ -17,11 +14,8 @@
     </mat-form-field>
     <mat-form-field class="input" hideRequiredMarker>
       <mat-label>密码</mat-label>
-      <label>
-        <input matInput placeholder="Ex. password" type="password" name="password" required
-               formControlName="password" autocomplete="on"
-        >
-      </label>
+      <input matInput placeholder="Ex. password" type="password" name="password" required
+             formControlName="password" autocomplete="on">
       <mat-error *ngIf="passwordControl.errors?.required">
         密码不能为空
       </mat-error>
@@ -30,7 +24,7 @@
       </mat-error>
     </mat-form-field>
   </div>
-  <div mat-dialog-actions dir="rtl" fxLayoutGap="8px">
+  <div mat-dialog-actions dir="rtl" class="gap-2">
     <button mat-raised-button color="primary" type="submit" [disabled]="!loginForm.valid">登录</button>
     <button mat-button (click)="onNoClick()">取消</button>
   </div>

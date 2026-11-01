@@ -1,9 +1,9 @@
-<div fxLayout="column" fxLayoutAlign="space-around stretch" >
-  <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-around" >
-    <mat-card fxFlex.xs="100" fxFlex.sm="95" fxFlex.md="85" fxFlex="60" style="max-width: 1080px; margin-top: 8px; padding: 32px">
+<div class="flex flex-col justify-around items-stretch" >
+  <div class="w-full min-w-0 flex flex-row justify-around" >
+    <mat-card class="w-full sm:w-[95%] md:w-[85%] lg:w-[60%]" style="max-width: 1080px; margin-top: 8px; padding: 32px">
       <mat-card-title>提一个新问题？</mat-card-title>
-      <mat-card-content fxLayoutAlign="center">
-        <form fxFlex="95" fxLayout="column" fxLayoutAlign="space-around" fxLayoutGap="16px" [formGroup]="questionForm">
+      <mat-card-content class="flex justify-center">
+        <form class="w-[95%] flex flex-col justify-around gap-4" [formGroup]="questionForm">
           <mat-form-field>
             <mat-label>问题</mat-label>
             <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="1" cdkAutosizeMaxRows="5" formControlName="questionContent"
@@ -27,13 +27,13 @@
       </mat-card-actions>
     </mat-card>
   </div>
-  <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-around center" >
-    <mat-card fxFlex.xs="100" fxFlex.sm="95" fxFlex.md="85" fxFlex="60" style="max-width: 1080px; margin-top: 8px">
+  <div class="w-full min-w-0 flex flex-row justify-around items-center" >
+    <mat-card class="w-full sm:w-[95%] md:w-[85%] lg:w-[60%]" style="max-width: 1080px; margin-top: 8px">
       <mat-progress-bar *ngIf="questionListLoading" mode="indeterminate"
                         style="position: relative; left: -16px; top: -16px; width: calc(100% + 32px)"></mat-progress-bar>
       <mat-card-content>
-        <div fxLayout="row">
-          <mat-form-field appearance="standard" style="width: 100px; margin-left: 8px;">
+        <div class="flex flex-wrap items-center sm:flex-nowrap">
+          <mat-form-field appearance="fill" subscriptSizing="dynamic" style="width: 100px; margin-left: 8px;">
             <mat-label>问题过滤</mat-label>
             <mat-select [(value)]="filter" (selectionChange)="handleFilterChange($event.value)">
               <mat-option value="all">全部</mat-option>
@@ -41,7 +41,7 @@
               <mat-option value="unsolved">未回答</mat-option>
             </mat-select>
           </mat-form-field>
-          <mat-paginator fxFlex="calc(100% - 100px)" style="min-width: 420px"
+          <mat-paginator class="min-w-0 flex-1"
                          [length]="totCount"
                          [pageSize]="pageSize"
                          [pageIndex]="currentPage-1"
@@ -49,17 +49,13 @@
                          (page)="handlePageEvent($event)">
           </mat-paginator>
         </div>
-        <mat-list *ngFor="let question of questionList; last as last ">
-          <mat-list-item matRipple fxLayout="row" fxLayoutAlign="start center" style="margin: 0" (click)="handleQuestionClick(question.id)">
-            <mat-chip-list fxFlex="noshrink" style="margin-right: 8px">
-              <mat-chip (click)="handleQuestionClick(question.id)" disableRipple [class.solved]="question.isAnswered">{{ question.isAnswered ? '已回答' : '未回答'}}</mat-chip>
-            </mat-chip-list>
-            <div>
-              {{ question.questionContent }}
-            </div>
-          </mat-list-item>
-          <mat-divider [inset]="true" *ngIf="!last" style="margin-top: 8px"></mat-divider>
-        </mat-list>
+        <div class="question-list-entry" *ngFor="let question of questionList; last as last; first as first" [class.first-question-entry]="first">
+          <button type="button" matRipple class="question-row" (click)="handleQuestionClick(question.id)">
+            <span class="question-status" [class.solved]="question.isAnswered">{{ question.isAnswered ? '已回答' : '未回答' }}</span>
+            <span class="question-text">{{ question.questionContent }}</span>
+          </button>
+          <mat-divider [inset]="true" *ngIf="!last"></mat-divider>
+        </div>
         <mat-paginator *ngIf="pageSize>10 && questionList && questionList.length > 10"
                        [length]="totCount"
                        [pageSize]="pageSize"

@@ -1,8 +1,14 @@
-.footer {
-  padding: 8px;
-  height: 32px;
-
+.footer-toolbar {
+  background: whitesmoke;
+  color: rgba(0, 0, 0, 0.87);
 }
+
+:host-context(.blue-gray) .footer-toolbar,
+:host-context(.black) .footer-toolbar {
+  background: #212121;
+  color: #fff;
+}
+
 a{
   color: #808080;
   svg {

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, SecurityContext } from '@angular/core';
+import { Component, OnDestroy, OnInit, SecurityContext, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { QuestionApiService } from '../question-api.service';
 import { Question } from '../../common/entities/question';
@@ -11,8 +11,6 @@ import { MarkdownModule, MarkdownService } from 'ngx-markdown';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatChipsModule } from '@angular/material/chips';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { CommonModule } from '@angular/common';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -20,14 +18,13 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   selector: 'app-question',
   templateUrl: './question.component.html',
   imports: [
     MatCardModule,
     MatProgressBarModule,
-    MatChipsModule,
-    FlexLayoutModule,
     CommonModule,
     MatDividerModule,
     MarkdownModule,
@@ -51,7 +48,7 @@ export class QuestionComponent implements OnInit, OnDestroy {
 
   private subscriptions: Array<Subscription> = [];
 
-  answerContentControl = this.formBuilder.nonNullable.control(
+  answerContentControl = inject(FormBuilder).nonNullable.control(
     '',
     {
       validators: [Validators.required]
@@ -60,7 +57,6 @@ export class QuestionComponent implements OnInit, OnDestroy {
 
   constructor(
     private questionApi: QuestionApiService,
-    private formBuilder: FormBuilder,
     private router: Router,
     private userService: UserService,
     private snackBar: MatSnackBar,
@@ -81,7 +77,9 @@ export class QuestionComponent implements OnInit, OnDestroy {
         this.loadQuestion();
       })
     );
-    this.markdownService.renderer.heading = (text, level) => {
+    this.markdownService.renderer.heading = ({ tokens, depth }) => {
+      const text = tokens.map(token => token.raw).join('');
+      const level = depth;
       const url = `${location.origin}${location.pathname}#${text}`;
       const sanitizedURL = this.domSanitizer.sanitize(SecurityContext.URL, url);
       return `

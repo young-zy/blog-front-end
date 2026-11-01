@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  baseURL: 'http://127.0.0.1:25568',
+  baseURL: 'https://young-zy.com/api',
   recaptchaSiteKey: '6LcF9GYaAAAAAD6NEd5XLu4vS0XNEc-mqsrMTxuR'
 };
 

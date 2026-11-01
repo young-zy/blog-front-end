@@ -1,25 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { QuestionApiService } from '../question-api.service';
 import { Question } from '../../common/entities/question';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ReCaptchaV3Service } from 'ng-recaptcha';
+import { RecaptchaV3Service } from '../../common/recaptcha-v3.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatListModule } from '@angular/material/list';
-import { MatChipsModule } from '@angular/material/chips';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRippleModule } from '@angular/material/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
   selector: 'app-question-list',
   templateUrl: './question-list.component.html',
@@ -32,10 +30,7 @@ import { CommonModule } from '@angular/common';
     MatProgressBarModule,
     MatPaginatorModule,
     MatDividerModule,
-    MatListModule,
-    MatChipsModule,
     ReactiveFormsModule,
-    FlexLayoutModule,
     MatInputModule,
     MatButtonModule,
     MatRippleModule,
@@ -55,7 +50,7 @@ export class QuestionListComponent implements OnInit {
 
   filter = 'all';
 
-  private nonNullableFormBuilder = this.formBuilder.nonNullable;
+  private nonNullableFormBuilder = inject(FormBuilder).nonNullable;
 
   questionForm = this.nonNullableFormBuilder.group({
     questionContent: this.nonNullableFormBuilder.control(
@@ -73,10 +68,9 @@ export class QuestionListComponent implements OnInit {
   });
 
   constructor(private questionApi: QuestionApiService,
-              private recaptchaV3Service: ReCaptchaV3Service,
+              private recaptchaV3Service: RecaptchaV3Service,
               private router: Router,
               private route: ActivatedRoute,
-              private formBuilder: FormBuilder,
               private snackBar: MatSnackBar) {
   }
 
@@ -98,11 +92,11 @@ export class QuestionListComponent implements OnInit {
   }
 
   handlePageEvent(pageEvent: PageEvent): void {
-    this.currentPage = pageEvent.pageIndex;
-    if (pageEvent.previousPageIndex !== pageEvent.pageIndex || this.pageSize !== pageEvent.pageSize) {
-      this.pageSize = pageEvent.pageSize;
-      // jump to new page
-      this.router.navigate(['/question'], {queryParams: {page: this.currentPage + 1, size: this.pageSize}}).then();
+    const nextPage = pageEvent.pageIndex + 1;
+    if (this.currentPage !== nextPage || this.pageSize !== pageEvent.pageSize) {
+      this.router.navigate(['/question'], {
+        queryParams: {page: nextPage, size: pageEvent.pageSize}
+      }).then();
     }
   }
 
@@ -123,10 +117,9 @@ export class QuestionListComponent implements OnInit {
     if (email === '') {
       email = null;
     }
-    const recaptchaSubscription = this.recaptchaV3Service.execute('newQuestion')
+    this.recaptchaV3Service.execute('newQuestion')
       .subscribe({
         next: token => {
-          recaptchaSubscription.unsubscribe();
           this.questionApi.newQuestion(token, this.questionContentControl.value, email).subscribe({
             next: () => {
               this.questionForm.reset();
@@ -145,7 +138,6 @@ export class QuestionListComponent implements OnInit {
             duration: 3000
           });
           console.log(error);
-          recaptchaSubscription.unsubscribe();
         }
       });
   }
@@ -159,6 +151,7 @@ export class QuestionListComponent implements OnInit {
         this.questionListLoading = false;
       },
       error: error => {
+        this.questionListLoading = false;
         console.log(error);
       }
     });

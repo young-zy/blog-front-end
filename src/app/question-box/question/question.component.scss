@@ -1,27 +1,23 @@
-.mat-standard-chip {
-  &:hover::after {
-    opacity: 0;
-  }
-
-  &:focus::after {
-    opacity: 0;
-  }
-
-  :host-context(.blue-gray) & {
-    &.solved {
-      background: #3aae45;
-    }
-  }
-
-  :host-context(.black) & {
-    &.solved {
-      background: #27732d;
-    }
-  }
-
-  :host-context(.indigo-pink) & {
-    &.solved {
-      background: #9fffa8;
-    }
-  }
+.question-display {
+  font-size: 34px;
+  line-height: 40px;
+  font-weight: 400;
 }
+
+.answer-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 12px;
+  margin-right: 16px;
+  border-radius: 16px;
+  background: #e0e0e0;
+  color: #222;
+  white-space: nowrap;
+}
+
+.answer-status.solved { background: #9fffa8; }
+:host-context(.blue-gray) .answer-status,
+:host-context(.black) .answer-status { background: #555; color: #fff; }
+:host-context(.blue-gray) .answer-status.solved { background: #3aae45; }
+:host-context(.black) .answer-status.solved { background: #27732d; }
