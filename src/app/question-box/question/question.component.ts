@@ -47,6 +47,7 @@ export class QuestionComponent implements OnInit, OnDestroy {
   question: Question | undefined;
 
   private routeSubscription?: Subscription;
+  private answerSubscription?: Subscription;
 
   answerContentControl = inject(FormBuilder).nonNullable.control(
     '',
@@ -72,6 +73,11 @@ export class QuestionComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.answerSubscription = this.answerContentControl.valueChanges.subscribe(() => {
+      if (this.preview) {
+        this.changeDetectorRef.markForCheck();
+      }
+    });
     this.routeSubscription = this.route.params.subscribe(next => {
         this.questionId = next.questionId;
         this.loadQuestion();
@@ -106,6 +112,7 @@ export class QuestionComponent implements OnInit, OnDestroy {
           horizontalPosition: 'center'
         });
         this.answerContentControl.reset();
+        this.preview = false;
         this.loadQuestion();
       },
       error: error => {
@@ -145,5 +152,6 @@ export class QuestionComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.routeSubscription?.unsubscribe();
+    this.answerSubscription?.unsubscribe();
   }
 }

@@ -22,10 +22,10 @@
             </div>
           </div>
         </div>
-        <div style="margin-bottom: 32px; margin-top: 32px; height: 1px" *ngIf="question?.isAnswered || preview">
+        <div style="margin-bottom: 32px; margin-top: 32px; height: 1px" *ngIf="question?.isAnswered || (preview && (isLoggedIn | async))">
           <mat-divider></mat-divider>
         </div>
-        <div *ngIf="question?.isAnswered || preview" class="flex flex-row justify-around items-start"
+        <div *ngIf="question?.isAnswered || (preview && (isLoggedIn | async))" class="flex flex-row justify-around items-start"
              style="margin-bottom: 32px;">
           <div class="flex-none question-display" style="margin-bottom: 16px; margin-right: 16px">A:</div>
           <div class="flex-auto min-w-0">
