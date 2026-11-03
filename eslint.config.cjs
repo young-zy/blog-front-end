@@ -5,7 +5,7 @@ const tsPlugin = require('@typescript-eslint/eslint-plugin');
 const templateParser = require('@angular-eslint/template-parser');
 
 module.exports = [
-  { ignores: ['dist/**', 'node_modules/**', 'projects/**', 'e2e/**'] },
+  { ignores: ['dist/**', 'node_modules/**', 'projects/**'] },
   {
     files: ['src/**/*.ts'],
     languageOptions: { parser: tsParser, parserOptions: { project: './tsconfig.json' } },

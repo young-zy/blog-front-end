@@ -44,6 +44,7 @@
               "node_modules/@fontsource/roboto/latin-500.css",
               "node_modules/@fontsource/noto-sans-sc/400.css",
               "node_modules/@material-design-icons/font/filled.css",
+              "src/tailwind.css",
               "src/styles.scss",
               "node_modules/prismjs/themes/prism-okaidia.css",
               "node_modules/katex/dist/katex.min.css"
@@ -135,21 +136,10 @@
               "node_modules/@fontsource/roboto/latin-500.css",
               "node_modules/@fontsource/noto-sans-sc/400.css",
               "node_modules/@material-design-icons/font/filled.css",
+              "src/tailwind.css",
               "src/styles.scss"
             ],
             "scripts": []
-          }
-        },
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "blog:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "blog:serve:production"
-            }
           }
         },
         "lint": {
