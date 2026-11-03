@@ -16,6 +16,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { marked } from 'marked';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -84,12 +85,14 @@ export class QuestionComponent implements OnInit, OnDestroy {
       });
     this.markdownService.renderer.heading = ({ tokens, depth }) => {
       const text = tokens.map(token => token.raw).join('');
+      const html = marked.Parser.parseInline(tokens);
+      const id = encodeURIComponent(text);
       const level = depth;
-      const url = `${location.origin}${location.pathname}#${text}`;
+      const url = `${location.origin}${location.pathname}#${id}`;
       const sanitizedURL = this.domSanitizer.sanitize(SecurityContext.URL, url);
       return `
-              <h${level} id="${text}" class="marked-header">
-                ${text}
+              <h${level} id="${id}" class="marked-header">
+                ${html}
                 <a title="Link to this heading" aria-hidden="true" class="head-link" href="${sanitizedURL}">
                   <i class="material-icons">link</i>
                 </a>
